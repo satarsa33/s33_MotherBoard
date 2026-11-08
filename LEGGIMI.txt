@@ -1,0 +1,124 @@
+S33 - MOTHER BOARD · v0.8
+=========================
+
+Novità della 0.8 · APP (PWA)
+  La Mother Board si installa come un'app: icona nel Dock, finestra sua, funziona anche offline.
+  Il service worker ha bisogno di un indirizzo http, non di un file aperto con doppio clic:
+    1. Terminale:  cd ~/Desktop/S33_Project/"s33_Mother Board"/v0.8
+                   python3 -m http.server 8033
+    2. Chrome:     http://localhost:8033
+    3. Menu ⋮ → "Trasmetti, salva e condividi" → "Installa S33 - Mother Board"
+       (oppure l'icona di installazione a destra nella barra degli indirizzi).
+  L'app installata si apre dal Dock o da Launchpad, ma il terminale con il server deve
+  restare aperto la prima volta; poi la pagina è in cache e si apre anche a server spento.
+  Attenzione: ogni indirizzo ha la sua memoria. La Mother Board aperta come file e quella
+  da localhost non condividono impostazioni e ultima sessione: per portare il lavoro, Save
+  di una sessione in una e Open nell'altra.
+  Per una versione nuova: si copia la cartella build/pwa accanto al nuovo index.html e si
+  cambia VERSIONE in sw.js.
+  Porta 8033 e non 8000 (quella della Board): così le due app restano separate.
+
+Novità della 0.8 · CHORDS (accordi e arpeggi)
+  Un modulo nuovo, nella lista dei moduli: prese MIDI e CLK in ingresso, CHORD e BASS in uscita.
+  Ogni nota che suoni diventa un accordo, oppure un arpeggio a tempo.
+  Aggiungendolo, i cavi si fanno da soli: MIDI In → Chords → il synth che prima suonava
+  direttamente, e Clock → CLK.
+
+  CHORD (modalità accordo)
+    - KEY e scala (Major, Minor, Dorian, Mixolydian, Harmonic minor): l'accordo si costruisce
+      sui gradi della scala, quindi ogni tasto dà l'accordo giusto della tonalità (in Do maggiore
+      il Re dà Rem, il Sol dà Sol o Sol7…). Una nota fuori scala va sul grado sotto.
+      "Free" invece mette sempre lo stesso accordo (Major, Minor, 7, Maj7, m7, Dim, Sus…) su ogni nota.
+    - CHORD: Triad, 7th, 9th, Sus2, Sus4, Power, Octave.
+    - VOICING: Close, Open, Drop 2, più i rivolti (1st, 2nd, 3rd inv.).
+    - STRUM: le note dell'accordo partono una dopo l'altra (fino a 80 ms), come una chitarra.
+    - BASS: la fondamentale una o due ottave sotto, sull'uscita BASS, per un secondo synth.
+    Il nome dell'accordo e le note si vedono nel modulo, anche dalla casa.
+
+  ARP (modalità arpeggio)
+    - PATTERN: Up, Down, Up-down, Random, As played. RATE da 1/4 a 1/32 (anche terzine).
+    - OCTAVES 1–3, GATE (durata delle note), LATCH (l'arpeggio continua a mani alzate;
+      un nuovo accordo sostituisce il precedente).
+    - Con il Clock collegato e in Play l'arpeggio è a tempo con gli altri moduli;
+      senza, gira da solo al BPM del pannello.
+
+  Pitch bend, modulazione e sustain passano attraverso. Panic e All Notes Off (lo Stop di Logic)
+  fermano anche gli arpeggi.
+
+Novità della 0.7 · Logic
+  - Allo Stop Logic manda "All Notes Off": ora le note tenute di quel canale si chiudono una
+    per una, anche negli strumenti che ignorano il comando (Nostos).
+  - Protezione dagli anelli: il MIDI Out non manda sul dispositivo che un MIDI In collegato
+    sta ascoltando (le note tornerebbero dentro all'infinito). Usa un secondo bus IAC.
+  - In Logic: Impostazioni → MIDI → Ingressi, togli la spunta a "IAC Driver Bus 1", altrimenti
+    Logic riceve le note che lui stesso manda e le rimanda fuori (eco in ritardo, note che
+    continuano dopo lo Stop).
+
+
+Novità della 0.6 · MIDI SPLIT
+  Un modulo con un ingresso MIDI e 8 uscite: ognuna lascia passare un solo canale (di serie
+  CH1…CH8, si cambia aprendo il modulo). Serve per far suonare da Logic tracce diverse a
+  strumenti diversi:
+    1. Mac: Configurazione MIDI Audio → Studio MIDI → Driver IAC → "Il dispositivo è online".
+    2. Logic: una traccia MIDI esterna per strumento, porta "IAC Driver Bus 1", canali 1, 2, 3…
+    3. Mother Board: MIDI In con dispositivo IAC e canale "All" → ingresso dello Split
+       (aggiungendo lo Split il cavo si fa da solo); poi in PATCHES ogni uscita dello Split
+       allo strumento che deve suonare quel canale.
+  I messaggi senza canale (clock, sysex) non passano dallo Split: per il tempo, il Clock può
+  seguire il MIDI clock di Logic.
+  Attenzione agli anelli: il MIDI Out non deve mandare sullo stesso bus IAC da cui ascolta il MIDI In.
+
+
+Novità della 0.5 · note appese
+  - Nuovo pulsante PANIC nel pannello in alto: chiude ogni nota di ogni canale, una per una, su
+    tutti i moduli (serve anche per Nostos, che ignora il comando All Notes Off).
+  - Quando una tastiera MIDI si collega o si scollega, le note rimaste tenute si chiudono da sole.
+  - Se la stessa nota arriva due volte allo stesso strumento, la prima si chiude prima di ripartire:
+    in un synth polifonico non occupa più due voci (era la causa della nota infinita di Nostos).
+  - I Panic dei moduli MIDI In chiudono anche le note tenute.
+
+Prima versione con gli strumenti veri dentro. Il motore è quello della S33 - Board
+(strumenti, cavi audio, MIDI, Clock, Mixer, Output e registrazione WAV, sessioni);
+la S33 - Board resta com'è e continua a funzionare per conto suo.
+
+COME SI USA
+  Apri index.html in Chrome. Il primo clic accende l'audio (oppure "Start audio").
+  All'apertura la casa è vuota: aggiungi i moduli dalla lista, o parti da un set pronto
+  (Synth & FX, Groove) o dall'ultima sessione.
+
+  BOARD (la casa)
+    - Clic su un modulo: si apre lo strumento vero, a tutta pagina (Esc o "← Board" per tornare).
+      Clock, Mixer, Output e MIDI si aprono come una scheda al centro.
+    - Le luci sono i segnali veri: il livello reale di ogni strumento (dopo il fader del Mixer),
+      le note che passano sui cavi MIDI, i battiti del Clock.
+    - Mouse sopra un modulo: i suoi collegamenti, tratteggiati. Trascina per spostarlo; × per toglierlo.
+  PATCHES (il cablaggio)
+    - Clic su un modulo per il focus, doppio clic per aprirlo. Trascina da presa a presa, oppure
+      clic e clic. Doppio clic su una linea per toglierla. Filtri AUDIO / MIDI / CLOCK.
+  Pannello in alto: sessione (New, Open, Save, Save as), Play/Stop (barra spaziatrice), BPM
+  (trascina o rotella, Maiusc = fine), Tap, REC (le opzioni sono nel modulo Output), + Module,
+  BOARD / PATCHES (tasto Tab).
+
+  Solo i moduli aggiunti vengono caricati. Quando ne aggiungi uno, i cavi ovvi si fanno da soli:
+  Clock alle prese CLK, gli strumenti all'Output (Twin Core o Nostos nella Stompbox se è libera),
+  MIDI In al primo synth, MIDI In 2 alla Granular, JSB P1 a un synth, Drum Machine al MIDI Out.
+
+COME NELLA BOARD
+  - Il Mixer agisce su ogni strumento dov'è collegato (fader, pan, mute, solo); la sua presa SEND
+    porta la mandata altrove. Ha un canale per ogni strumento presente.
+  - Un ingresso MIDI o CLK accetta un solo cavo (il nuovo sostituisce il vecchio).
+  - Open apre anche le sessioni della S33 Board: i moduli prendono posto sulla griglia.
+
+DA SAPERE
+  - Gli strumenti salvano le loro impostazioni nel browser come nella Board: aperte dalla stessa
+    origine (per esempio entrambe come file), Board e Mother Board condividono quelle impostazioni,
+    non le disposizioni né i cavi.
+  - Un modulo tolto non suona più, ma le risorse che usava si liberano del tutto solo ricaricando
+    la pagina.
+  - Ci sono tutti i moduli della Board 1.9: anche Vega e l'FM-1 (il synth hardware via USB).
+
+RICOSTRUIRE (cartella build; il modulo Chords è in build/mb_chord.js)
+  Il template nasce da quello della Board, poi gli strumenti si incorporano con il build.py della Board:
+  cd "s33_Mother Board"
+  python3 build/mb_make.py "../s33 - Board/build/board-template.html" build/mb_ui.css build/mb_ui.html build/mb_ui.js build/mb-template.html
+  python3 "../s33 - Board/build/build.py" "../s33 - Twin Core/v9 (1.0.2)/index.html" "../s33_Stompbox/v3/index.html" "../s33_Drum Machine/s33-Drum Machine-L01/s33-drum-machine-v8/index.html" "../s33 - Nostos One Synth/v7 (1.5.0)/index.html" "../s33 - JSB/v9/index.html" "../s33_Granular/s33_Granular Machine/v4 (Board)/index.html" "../s33_Vega/v9 (1.2.0)/index.html" build/mb-template.html "v0.8/index.html"
