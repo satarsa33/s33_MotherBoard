@@ -296,14 +296,14 @@ html,body{background:#050505;-webkit-user-select:none;user-select:none}
 button{font:600 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);background:#262522;border:1px solid #3a3834;border-radius:7px;padding:9px 12px;white-space:nowrap;cursor:pointer}
 button:hover{border-color:#5a5750}
 #fp button.on,#lib button.on{background:var(--ck);border-color:var(--ck);color:#0b1a10}
-#fp{position:fixed;left:0;right:0;top:0;height:64px;display:flex;align-items:center;gap:8px;padding:0 14px;background:linear-gradient(#1d1c1a,#141312);border-bottom:1px solid #000;box-shadow:0 1px 0 #2a2825 inset,0 6px 18px rgba(0,0,0,.6);z-index:6000}
+#fp{position:fixed;left:0;right:0;top:0;height:64px;display:flex;align-items:center;gap:6px;padding:0 14px;background:linear-gradient(#1d1c1a,#141312);border-bottom:1px solid #000;box-shadow:0 1px 0 #2a2825 inset,0 6px 18px rgba(0,0,0,.6);z-index:6000}
 #fp .lg{font:700 13px/1 "Helvetica Neue",Arial,sans-serif;letter-spacing:.22em;margin-right:4px;white-space:nowrap}#fp .lg b{color:var(--gold2)}
 #fp .sep{width:1px;height:34px;background:#34312c;flex:none}
 #fp .cap{font-size:9px;letter-spacing:.22em;color:var(--mut);white-space:nowrap}
 #fp #go{padding:9px 11px}
 #fp #go.on{background:#1d2a20;border-color:#2f5a3c;color:#9fdcb4}
 #st{display:none}
-#fp #sname{width:128px;background:#0e0e0d;border-color:#34312c;padding:8px 10px}
+#fp #sname{width:100px;background:#0e0e0d;border-color:#34312c;padding:8px 10px}
 #fp .sb{padding:8px 8px;font-size:11.5px}
 #fp button{padding:8px 10px}
 #snew.warn{background:#d0452f;border-color:#d0452f;color:#fff}
@@ -408,6 +408,77 @@ button:hover{border-color:#5a5750}
 .chd label[hidden]{display:none}
 .chd .chh{color:var(--mut);font-size:11px;line-height:1.4}
 
+/* Looper: 4 tracce a cassetta */
+#fp .tapes{display:flex;align-items:center;gap:5px;font:600 11px/1 -apple-system,sans-serif;color:var(--mut);cursor:pointer;white-space:nowrap}
+#fp .tapes input{accent-color:#f08a24;margin:0}
+.lp-deck{height:100%;border-radius:12px;padding:14px 16px 14px;position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,#3b3a38 0,#2a2927 5%,#1f1e1c 60%,#191817 100%);box-shadow:inset 0 1px 0 #ffffff26;color:var(--ink);font:600 12px/1.2 -apple-system,BlinkMacSystemFont,sans-serif}
+.lp-deck::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,#e2402f 0 25%,#f08a24 0 50%,#f2c230 0 75%,#2fb3a6 0)}
+.lp-top{display:flex;align-items:center;gap:16px;height:64px;flex:none}
+.lp-brand{display:flex;flex-direction:column;gap:5px;min-width:220px}
+.lp-brand .n{font:800 24px/1 "Helvetica Neue",Arial;letter-spacing:.32em}
+.lp-brand .s{font:700 9px/1 sans-serif;letter-spacing:.34em;color:var(--mut)}
+.lp-brand .st{display:flex;gap:3px;margin-top:2px}.lp-brand .st i{width:24px;height:4px;border-radius:1px}
+.lp-ctr{display:flex;align-items:center;gap:8px;background:#0b0b0a;border:1px solid #000;border-radius:8px;padding:6px 10px;box-shadow:inset 0 2px 6px #000}
+.lp-ctr .d{display:flex;gap:2px}.lp-ctr .d span{width:19px;height:28px;border-radius:3px;background:linear-gradient(#e9e4d8,#bdb6a6 48%,#9c9584 50%,#d9d3c4);color:#151412;font:700 20px/28px ui-monospace,Menlo,monospace;text-align:center;box-shadow:inset 0 0 3px #0008}
+.lp-ctr .d span.dot{width:7px;background:none;box-shadow:none;color:var(--ink)}
+.lp-ctr small{font:700 8.5px/1.2 sans-serif;letter-spacing:.2em;color:var(--mut)}
+.lp-g{display:flex;flex-direction:column;gap:5px}
+.lp-cap{font:700 8.5px/1 sans-serif;letter-spacing:.24em;color:var(--mut);white-space:nowrap}
+.lp-opts{display:flex;gap:3px;background:#0e0e0d;border-radius:8px;padding:3px;border:1px solid #000}
+.lp-opts span{padding:7px 9px;border-radius:5px;font:800 10px/1 sans-serif;letter-spacing:.08em;color:var(--mut);cursor:pointer}
+.lp-opts span.on{background:linear-gradient(#f1ece4,#cfc8b8);color:#151412}
+.lp-pill{display:flex;align-items:center;gap:7px;border:1px solid #3a3834;border-radius:20px;padding:7px 11px;font:700 10px/1 sans-serif;letter-spacing:.12em;background:#141312;white-space:nowrap}
+.lp-pill i{width:8px;height:8px;border-radius:50%;background:#3a3834}
+.lp-pill.on i{background:#5fcf86;box-shadow:0 0 6px #5fcf86}#lpFoot.on i{background:#5aa0ff;box-shadow:0 0 6px #5aa0ff}
+.lp-click{cursor:pointer}
+.lp-tracks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:10px;flex:1;min-height:0}
+.lp-trk{background:linear-gradient(180deg,#262523,#1b1a19);border:1px solid #000;border-radius:12px;padding:10px 11px;box-shadow:inset 0 1px 0 #ffffff14;display:flex;flex-direction:column}
+.lp-trk.sel{box-shadow:inset 0 1px 0 #ffffff14,0 0 0 2px #f1ece4aa}
+.lp-th{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lp-th b{font:800 10px/1 sans-serif;letter-spacing:.26em;white-space:nowrap}
+.lp-th em{font-style:normal;font:700 8.5px/1 ui-monospace,monospace;color:var(--mut);letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-led{width:9px;height:9px;border-radius:50%;background:#2b2a27;margin-left:auto;flex:none}
+.lp-led.r{background:#e2402f;box-shadow:0 0 9px #e2402f}.lp-led.bl{animation:lpbl .6s steps(2) infinite}
+.lp-led.g{background:#5fcf86;box-shadow:0 0 9px #5fcf86}.lp-led.o{background:#ff7a2f;box-shadow:0 0 9px #ff7a2f}
+@keyframes lpbl{50%{opacity:.2}}
+.lp-cas{position:relative;height:158px;flex:none;border-radius:9px;background:linear-gradient(160deg,#3a3936,#232220 55%,#1c1b1a);border:1px solid #000;box-shadow:inset 0 1px 0 #ffffff1c,0 4px 10px #0008;overflow:hidden}
+.lp-trk.blank .lp-cas{background:linear-gradient(160deg,#4a4844,#2e2d2b)}
+.lp-cas .scr{position:absolute;width:7px;height:7px;border-radius:50%;background:radial-gradient(#9a958a,#4a4741)}
+.lp-lab{position:absolute;left:10px;right:10px;top:9px;height:92px;border-radius:5px;background:#efe8d6;overflow:hidden;box-shadow:inset 0 0 0 1px #0002}
+.lp-trk.blank .lp-lab .stp{filter:grayscale(1) brightness(1.5);opacity:.5}
+.lp-lab .stp{position:absolute;left:0;right:0;top:0;height:28px;display:flex;flex-direction:column}.lp-lab .stp i{flex:1}
+.lp-lab .hw{position:absolute;left:9px;right:8px;top:31px;font:400 17px/1.1 "Marker Felt","Permanent Marker","Comic Sans MS",cursive;color:#1f3a8a;transform:rotate(-2deg);white-space:nowrap;overflow:hidden;outline:none;cursor:text;min-height:18px}
+.lp-lab .hw:empty::before{content:"write a name…";color:#1f3a8a55}
+.lp-lab .side{position:absolute;right:8px;top:6px;font:900 14px/1 "Helvetica Neue",Arial;color:#fff;text-shadow:0 1px 0 #0005}
+.lp-lab .ab{position:absolute;left:8px;top:7px;font:800 8.5px/1 sans-serif;letter-spacing:.18em;color:#fff;text-shadow:0 1px 0 #0004}
+.lp-lab .win{position:absolute;left:34px;right:34px;top:50px;height:36px;border-radius:18px;background:#0e0e0d;border:2px solid #b8b1a0;box-shadow:inset 0 2px 8px #000;overflow:hidden}
+.lp-lab .tp{position:absolute;left:20px;right:20px;top:12px;height:10px;background:#3b2717;border-top:1px solid #5a3d24;border-bottom:1px solid #20140b}
+.lp-lab .pack{position:absolute;border-radius:50%;background:#3b2717;box-shadow:inset 0 0 0 1px #5a3d24}
+.lp-lab .reel{position:absolute;top:2px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,#efe8d6 0 5px,transparent 5.5px),repeating-conic-gradient(#d9d2c0 0 20deg,#3a3936 20deg 60deg);border:2px solid #cfc8b6}
+.lp-wave{position:absolute;left:10px;right:10px;bottom:12px;height:34px;width:calc(100% - 20px)}
+.lp-cas .holes{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);display:flex;gap:30px}.lp-cas .holes i{width:9px;height:4px;border-radius:2px;background:#0b0b0a}
+.lp-vu{margin-top:9px;height:46px;width:100%;flex:none;border-radius:7px;background:linear-gradient(#f3e7bf,#e4d3a0);border:1px solid #000;box-shadow:inset 0 2px 6px #0006;display:block}
+.lp-keys{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:10px;flex:none}
+.lp-keys .k{height:44px;border-radius:5px 5px 7px 7px;background:linear-gradient(#e9e3d5,#bfb8a8);border:1px solid #000;box-shadow:0 5px 0 #57534a,inset 0 1px 0 #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#1b1a18;font:800 8.5px/1 sans-serif;letter-spacing:.1em;cursor:pointer;transition:transform .05s}
+.lp-keys .k s{text-decoration:none;font-size:14px;line-height:1}
+.lp-keys .k.rec s{color:#e2402f}
+.lp-keys .k:active,.lp-keys .k.dn{transform:translateY(4px);box-shadow:0 1px 0 #57534a,inset 0 2px 4px #0005;background:linear-gradient(#cfc8b8,#b3ac9b)}
+.lp-keys .k.dn.rec{background:linear-gradient(#ff8a72,#e2402f);color:#fff}.lp-keys .k.dn.rec s{color:#fff}
+.lp-keys .k.dn.play{background:linear-gradient(#9be9b6,#5fcf86)}
+.lp-keys .k.dn.dub{background:linear-gradient(#ffb27c,#ff7a2f)}
+.lp-mix{display:flex;align-items:center;gap:7px;margin-top:auto;padding-top:12px}
+.lp-mix input{flex:1;min-width:0;accent-color:#efe8d6}
+.lp-mix .sm{font:800 9px/1 sans-serif;border:1px solid #3a3834;border-radius:5px;padding:6px 7px;color:var(--mut);cursor:pointer;white-space:nowrap}
+.lp-mix .sm.on{background:#e2402f;border-color:#e2402f;color:#fff}.lp-mix .src{color:var(--ink)}
+.lp-bot{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid #2e2d2a;flex:none}
+.lp-bot select{font:600 11px/1 -apple-system,sans-serif;color:var(--ink);background:#141312;border:1px solid #3a3834;border-radius:6px;padding:6px 6px;max-width:130px}
+.lp-bot input[type=range]{width:110px;accent-color:#efe8d6}
+.lp-msg{color:#ffb27c;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.lp-btn{font:800 10px/1 sans-serif;letter-spacing:.12em;color:#151412;background:linear-gradient(#f1ece4,#cbc4b3);border:1px solid #000;border-radius:7px;padding:9px 11px;box-shadow:0 3px 0 #6d685d,inset 0 1px 0 #fff;white-space:nowrap}
+.lp-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #6d685d}
+.lp-btn.lp-hot{background:linear-gradient(#ffb27c,#ff7a2f)}.lp-btn.warn{background:#e2402f;color:#fff}
+.lp-trk.blank .lp-lab .ab{color:#8a8473;text-shadow:none}
+
 </style>
 </head>
 <body>
@@ -417,7 +488,7 @@ button:hover{border-color:#5a5750}
   <span id="load" title="Audio dropouts" hidden><i></i><b>Load</b></span>
   <span class="sep"></span>
   <span class="cap">SESSION</span><input id="sname" spellcheck="false" title="Session name">
-  <button class="sb" id="snew" title="Start an empty session">New</button><button class="sb" id="sopen" title="Open a session file (also S33 Board sessions)">Open…</button><button class="sb" id="ssave" title="Save the session (⌘S)">Save</button><button class="sb" id="ssaveas" title="Save the session to a new file">Save as…</button>
+  <button class="sb" id="snew" title="Start an empty session">New</button><button class="sb" id="sopen" title="Open a session file (also S33 Board sessions)">Open…</button><button class="sb" id="ssave" title="Save the session (⌘S)">Save</button><button class="sb" id="ssaveas" title="Save the session to a new file">Save as…</button><label class="tapes" id="tapes" title="Save the Looper tapes in the session file (full quality, a few MB per track)"><input type="checkbox">Tapes</label>
   <span class="sep"></span>
   <button id="play" title="Start the Clock (Space)">▶ Play</button><span class="seg7" id="bpm" title="Drag up/down or use the mouse wheel (Shift = fine)">120<small>BPM</small></span><button id="tap">Tap</button>
   <button id="panic" title="Stop every note on every module">Panic</button><button id="recb" title="Record to WAV (the settings are in the Output module)">● REC</button>
@@ -469,9 +540,10 @@ const DEFS = {
   outm: { name:"Output", c:"#c0453a", ports:[{p:"in",dir:"in",t:"audio",l:"IN"}], ui:outUI },
   mixer:{ name:"Mixer", c:"#9a948a", ports:[{p:"send",dir:"out",t:"audio",l:"SEND"}], ui:mixerUI },
   split:{ name:"MIDI Split", c:"#7fb0ff", ports:[{p:"in",dir:"in",t:"midi",l:"MIDI"}].concat([1,2,3,4,5,6,7,8].map(i=>({p:"o" + i, dir:"out", t:"midi", l:String(i)}))), ui:splitUI },
-  chord:{ name:"Chords", c:"#c58cf0", ports:[{p:"in",dir:"in",t:"midi",l:"MIDI"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"midi",l:"CHORD"},{p:"bass",dir:"out",t:"midi",l:"BASS"}], ui:chordUI }
+  chord:{ name:"Chords", c:"#c58cf0", ports:[{p:"in",dir:"in",t:"midi",l:"MIDI"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"midi",l:"CHORD"},{p:"bass",dir:"out",t:"midi",l:"BASS"}], ui:chordUI },
+  lp:   { name:"Looper", c:"#f08a24", ports:[{p:"in1",dir:"in",t:"audio",l:"IN 1"},{p:"in2",dir:"in",t:"audio",l:"IN 2"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"audio",l:"OUT"}], ui:lpUIBuild }
 };
-const ORDER = ["midi","midi2","split","chord","clock","mixer","tc","sb","dm","no","vg","ac","jsb","gr","fm","outm","mout"];
+const ORDER = ["midi","midi2","split","chord","lp","clock","mixer","tc","sb","dm","no","vg","ac","jsb","gr","fm","outm","mout"];
 const DEFAULT_CABLES = [
   {a:{m:"midi",p:"midiOut"}, b:{m:"tc",p:"midiIn"}},
   {a:{m:"clock",p:"clkOut"}, b:{m:"tc",p:"clkIn"}},
@@ -546,7 +618,7 @@ document.getElementById("go").onclick = ()=>{ getCtx().catch(err=>{ startP = nul
 
 function audioLink(c, on){
   if(!ctx) return;
-  const a = S33mods[c.a.m].post || S33mods[c.a.m].out, b = S33mods[c.b.m].in;
+  const a = S33mods[c.a.m].post || S33mods[c.a.m].out, b = c.b.m === "lp" && c.b.p === "in2" ? (S33mods.lp.in2 || (S33mods.lp.in2 = ctx.createGain())) : S33mods[c.b.m].in;
   try{ on ? a.connect(b) : a.disconnect(b); }catch(e){}
 }
 
@@ -1267,7 +1339,7 @@ function clockUI(bd){
 /* ===== Mixer =====
    Un canale per strumento: il fader regola l'uscita dello strumento, ovunque sia collegata.
    Solo: restano udibili gli strumenti in solo e quelli sulla loro catena (prima e dopo, via cavi audio). */
-const MIXCH = [["tc","Twin Core","TWIN"],["no","Nostos One","NOST"],["vg","Vega","VEGA"],["ac","Acid","ACID"],["jsb","JSB","JSB"],["dm","Drums","DRUM"],["gr","Granular","GRAN"],["fm","FM-1","FM-1"],["sb","Stompbox","STOMP"]];
+const MIXCH = [["tc","Twin Core","TWIN"],["no","Nostos One","NOST"],["vg","Vega","VEGA"],["ac","Acid","ACID"],["lp","Looper","LOOP"],["jsb","JSB","JSB"],["dm","Drums","DRUM"],["gr","Granular","GRAN"],["fm","FM-1","FM-1"],["sb","Stompbox","STOMP"]];
 const MXDEF = {v:80, m:false, s:false, pan:0, send:0};
 if(!S.mix) S.mix = {};
 MIXCH.forEach(([id])=>{ S.mix[id] = Object.assign({}, MXDEF, S.mix[id] || {}); });
@@ -1669,6 +1741,345 @@ function chordShow(){
 setInterval(()=>{ if(!chUI.name) return; if(chUI.name.textContent !== CHD.name) chUI.name.textContent = CHD.name;
   const t = CHD.notes.map(n=>NOTE_N[n % 12] + (Math.floor(n / 12) - 1)).join(" · "); if(chUI.notes.textContent !== t) chUI.notes.textContent = t; }, 120);
 
+/* ===== Looper: 4 tracce a cassetta =====
+   Registra quello che arriva su IN 1 / IN 2 (qualunque cavo audio della board), lo mette in loop, sovraincide.
+   Le durate sono in battute (4/4) agganciate al Clock, oppure libere (FREE: il primo loop decide la durata).
+   Il nastro sta nel browser (IndexedDB) e, se TAPES è acceso, entra nelle sessioni in qualità piena (16 bit). */
+const LP_WORKLET = `
+class S33Looper extends AudioWorkletProcessor {
+  constructor(){
+    super(); this.fb = .9;
+    this.T = [0,1,2,3].map(()=>({ mode:"empty", L:null, R:null, len:0, org:0, w:0, open:false, cap:0, src:0, q:[], undo:[], g:0, recL:null, recR:null }));
+    this.port.onmessage = e=>this.msg(e.data);
+  }
+  post(i){ const t = this.T[i]; this.port.postMessage({ t:"st", i, mode:t.mode, org:t.org, len:t.len, layers:t.undo.length, w:t.w }); }
+  sendBuf(i){ const t = this.T[i]; if(!t.L){ this.port.postMessage({ t:"buf", i, L:null, R:null }); return; } const L = t.L.slice(0, t.len), R = t.R.slice(0, t.len); this.port.postMessage({ t:"buf", i, L, R }, [L.buffer, R.buffer]); }
+  pushUndo(t){ if(!t.L) return; t.undo.push([t.L.slice(0, t.len), t.R.slice(0, t.len), t.len]); if(t.undo.length > 6) t.undo.shift(); }
+  msg(m){
+    if(m.c === "fb"){ this.fb = m.v; return; }
+    const i = m.i, t = this.T[i];
+    if(m.c === "rec"){ // il nastro nuovo si prepara subito, si incide da "at"
+      const cap = m.len || Math.round(sampleRate * 90); t.recL = new Float32Array(cap); t.recR = new Float32Array(cap); t.q.push(m); return; }
+    if(m.c === "load"){ t.L = m.L; t.R = m.R; t.len = m.L.length; t.mode = "stop"; t.undo = []; t.q = []; this.post(i); return; }
+    if(m.c === "undo"){ t.q = t.q.filter(x=>x.c !== "rec" && x.c !== "dub");
+      if(t.mode === "rec"){ t.recL = t.recR = null; t.mode = t.L ? "stop" : "empty"; }
+      else if(t.undo.length){ const [L, R, len] = t.undo.pop(); t.L = L; t.R = R; t.len = len; if(t.mode === "dub") t.mode = "play"; this.sendBuf(i); }
+      else if(t.mode === "dub") t.mode = "play";
+      this.post(i); return; }
+    if(m.c === "eject"){ t.q = []; t.L = t.R = t.recL = t.recR = null; t.len = 0; t.mode = "empty"; t.undo = []; this.post(i); this.sendBuf(i); return; }
+    if(m.c === "cancel"){ t.q = []; this.post(i); return; }
+    if(m.c === "dub") this.pushUndo(t);
+    t.q.push(m); t.q.sort((a, b)=>a.at - b.at);
+  }
+  apply(i, t, m, f){
+    if(m.c === "rec"){ if(t.L) this.pushUndo(t); t.mode = "rec"; t.w = 0; t.org = f; t.open = !m.len; t.cap = t.recL.length; t.src = m.src; t.fresh = true; this.post(i); return; }
+    if(m.c === "close"){ if(t.mode === "rec") this.finish(i, t, m.then || "play"); return; }
+    if(m.c === "dub"){ if(!t.L) return; if(t.mode !== "play" && t.mode !== "dub") t.org = f; t.mode = "dub"; t.src = m.src; this.post(i); return; }
+    if(m.c === "play"){ if(t.mode === "rec"){ this.finish(i, t, "play"); return; } if(!t.L) return; if(t.mode === "stop") t.org = m.org != null ? m.org : f; const was = t.mode; t.mode = "play"; if(was === "dub") this.sendBuf(i); this.post(i); return; }
+    if(m.c === "stop"){ if(t.mode === "rec"){ this.finish(i, t, "stop"); return; } const was = t.mode; if(t.L){ t.mode = "stop"; if(was === "dub") this.sendBuf(i); } this.post(i); return; }
+  }
+  finish(i, t, then){
+    const n = t.w; if(n < 64){ t.recL = t.recR = null; t.mode = t.L ? "stop" : "empty"; this.post(i); return; }
+    const L = t.open ? t.recL.slice(0, n) : t.recL, R = t.open ? t.recR.slice(0, n) : t.recR, fd = Math.min(96, n >> 2);
+    for(let k = 0; k < fd; k++){ const g = k / fd; L[k] *= g; R[k] *= g; L[n - 1 - k] *= g; R[n - 1 - k] *= g; }
+    t.L = L; t.R = R; t.len = n; t.recL = t.recR = null; t.mode = then; this.post(i); this.sendBuf(i);
+  }
+  process(inp, out){
+    const n = out[0][0].length, f0 = currentFrame, fb = this.fb;
+    const a = inp[0] || [], b = inp[1] || [], aL = a[0], aR = a[1] || a[0], bL = b[0], bR = b[1] || b[0];
+    for(let i = 0; i < 4; i++){
+      const t = this.T[i], o = out[i], oL = o[0], oR = o[1] || o[0];
+      for(let s = 0; s < n; s++){
+        const f = f0 + s;
+        while(t.q.length && t.q[0].at <= f) this.apply(i, t, t.q.shift(), f);
+        let iL = 0, iR = 0;
+        if(t.mode === "rec" || t.mode === "dub"){ if(t.src !== 1 && aL){ iL += aL[s]; iR += aR[s]; } if(t.src !== 0 && bL){ iL += bL[s]; iR += bR[s]; } }
+        let yL = 0, yR = 0;
+        if(t.mode === "rec"){ t.recL[t.w] = iL; t.recR[t.w] = iR; t.w++; if(t.w >= t.cap) this.finish(i, t, "play"); }
+        else if((t.mode === "play" || t.mode === "dub") && t.len){
+          const p = ((f - t.org) % t.len + t.len) % t.len; yL = t.L[p]; yR = t.R[p];
+          if(t.mode === "dub"){ t.L[p] = yL * fb + iL; t.R[p] = yR * fb + iR; }
+        }
+        const tg = (t.mode === "play" || t.mode === "dub") ? 1 : 0; t.g += (tg - t.g) * .004;
+        oL[s] = yL * t.g; oR[s] = yR * t.g;
+      }
+    }
+    return true;
+  }
+}
+try{ registerProcessor("s33-looper", S33Looper); }catch(e){}
+`;
+if(!S.lp) S.lp = {};
+S.lp = Object.assign({ bars:4, free:false, fb:90, foot:true, tapes:true, sel:0, in1:"", in2:"" }, S.lp);
+if(!Array.isArray(S.lp.tr) || S.lp.tr.length !== 4) S.lp.tr = [0,1,2,3].map(i=>({ label:"", vol:80, mute:false, src:i % 2 }));
+const LP_STRIPES = [["#e2402f","#f08a24","#f2c230"],["#2fb3a6","#5aa0ff","#a57ddc"],["#f2c230","#5fcf86","#2fb3a6"],["#ff6b9a","#f08a24","#ffd166"]];
+const LPT = [0,1,2,3].map(()=>({ mode:"empty", len:0, org:0, layers:0, L:null, R:null, peaks:null, pend:null, w:0, wasPlaying:false }));
+const LP = { node:null, ready:null, gains:[], an:[], inA:null, inB:null, out:null, sr:48000 };
+/* --- motore --- */
+function lpEngine(){
+  if(LP.ready) return LP.ready;
+  LP.ready = (async ()=>{
+    const c = await getCtx(); LP.sr = c.sampleRate;
+    await c.audioWorklet.addModule("data:text/javascript;charset=utf-8," + encodeURIComponent(LP_WORKLET));
+    LP.node = new AudioWorkletNode(c, "s33-looper", { numberOfInputs:2, numberOfOutputs:4, outputChannelCount:[2,2,2,2], channelCount:2, channelCountMode:"explicit" });
+    LP.node.port.onmessage = e=>lpMsg(e.data);
+    for(let i = 0; i < 4; i++){ const g = c.createGain(), a = c.createAnalyser(); a.fftSize = 512; LP.node.connect(g, i); g.connect(a); LP.gains.push(g); LP.an.push(a); }
+    lpWire(); lpGains(); LP.node.port.postMessage({ c:"fb", v:S.lp.fb / 100 });
+    const saved = await lpIdb("readonly", st=>st.get("tapes"));
+    if(saved && saved.tracks) saved.tracks.forEach((x, i)=>{ if(x && x.L && x.L.length){ const L = new Float32Array(x.L), R = new Float32Array(x.R); lpSetBuf(i, L.slice(), R.slice()); LP.node.port.postMessage({ c:"load", i, L, R }, [L.buffer, R.buffer]); } });
+    return LP.node;
+  })();
+  LP.ready.catch(e=>{ console.warn(e); LP.ready = null; });
+  return LP.ready;
+}
+/* gli ingressi e l'uscita del modulo possono essere ricreati (modulo tolto e rimesso): si ricollegano */
+function lpWire(){
+  if(!LP.node) return; const m = S33mods.lp;
+  if(!m.in2 && ctx) m.in2 = ctx.createGain();
+  if(LP.inA !== m.in){ try{ LP.inA && LP.inA.disconnect(LP.node); }catch(e){} m.in.connect(LP.node, 0, 0); LP.inA = m.in; }
+  if(LP.inB !== m.in2){ try{ LP.inB && LP.inB.disconnect(LP.node); }catch(e){} m.in2.connect(LP.node, 0, 1); LP.inB = m.in2; }
+  if(LP.out !== m.out){ LP.gains.forEach(g=>{ try{ g.disconnect(); }catch(e){} g.connect(m.out); g.connect(LP.an[LP.gains.indexOf(g)]); }); LP.out = m.out; }
+}
+function lpGains(){ if(!ctx) return; LP.gains.forEach((g, i)=>{ const t = S.lp.tr[i]; g.gain.setTargetAtTime(t.mute ? 0 : Math.pow(t.vol / 100, 1.6) * 1.2, ctx.currentTime, .015); }); }
+function lpMsg(m){
+  const t = LPT[m.i];
+  if(m.t === "st"){ const was = t.mode; Object.assign(t, { mode:m.mode, org:m.org, len:m.len, layers:m.layers });
+    if(t.pend && ((t.pend === "rec" && m.mode === "rec") || (t.pend === "dub" && m.mode === "dub") || (t.pend === "play" && m.mode === "play"))) t.pend = null;
+    if(m.mode === "empty") t.pend = null; lpDraw(); return; }
+  if(m.t === "buf"){ lpSetBuf(m.i, m.L, m.R); lpStore(); lpDraw(); }
+}
+function lpSetBuf(i, L, R){ const t = LPT[i]; t.L = L; t.R = R; if(!L){ t.peaks = null; t.len = 0; return; } t.len = L.length;
+  const N = 160, p = new Float32Array(N), step = L.length / N; for(let k = 0; k < N; k++){ let mx = 0; for(let j = Math.floor(k * step), e = Math.floor((k + 1) * step); j < e; j += 4){ const v = Math.abs(L[j]) + Math.abs(R[j]); if(v > mx) mx = v; } p[k] = mx / 2; } t.peaks = p; }
+/* --- archivio del browser --- */
+const lpIdb = (mode, fn)=>new Promise(res=>{ try{ const rq = indexedDB.open("s33-mb-looper", 1);
+  rq.onupgradeneeded = ()=>rq.result.createObjectStore("kv");
+  rq.onsuccess = ()=>{ try{ const tx = rq.result.transaction("kv", mode), st = tx.objectStore("kv"), q = fn(st); tx.oncomplete = ()=>{ rq.result.close(); res(q && q.result); }; tx.onerror = tx.onabort = ()=>{ rq.result.close(); res(null); }; }catch(e){ res(null); } };
+  rq.onerror = ()=>res(null); }catch(e){ res(null); } });
+let lpStoreT = 0;
+function lpStore(){ clearTimeout(lpStoreT); lpStoreT = setTimeout(()=>{ const tracks = LPT.map(t=>t.L ? { L:t.L, R:t.R } : null); lpIdb("readwrite", st=>st.put({ sr:LP.sr, tracks }, "tapes")); }, 600); }
+/* sessioni: 16 bit stereo intercalati, in base64 */
+async function lpSessTapes(){
+  if(!S.lp.tapes) return null;
+  const d = LPT.some(t=>t.L) ? { sr:LP.sr, tracks:LPT.map(t=>t.L ? { L:t.L, R:t.R } : null) } : await lpIdb("readonly", st=>st.get("tapes"));
+  if(!d || !d.tracks || !d.tracks.some(Boolean)) return null;
+  return { sr:d.sr, tracks:d.tracks.map(x=>{ if(!x || !x.L) return null; const n = x.L.length, a = new Int16Array(n * 2);
+    for(let k = 0; k < n; k++){ a[2 * k] = Math.max(-32768, Math.min(32767, Math.round(x.L[k] * 32767))); a[2 * k + 1] = Math.max(-32768, Math.min(32767, Math.round(x.R[k] * 32767))); }
+    const u = new Uint8Array(a.buffer); let s = ""; for(let k = 0; k < u.length; k += 32768) s += String.fromCharCode.apply(null, u.subarray(k, k + 32768));
+    return { frames:n, pcm16:btoa(s) }; }) };
+}
+function lpWriteTapes(tp){
+  if(!tp || !tp.tracks) return lpIdb("readwrite", st=>st.delete("tapes"));
+  const tracks = tp.tracks.map(x=>{ if(!x || !x.pcm16) return null; const s = atob(x.pcm16), u = new Uint8Array(s.length); for(let k = 0; k < s.length; k++) u[k] = s.charCodeAt(k);
+    const a = new Int16Array(u.buffer), n = a.length >> 1, L = new Float32Array(n), R = new Float32Array(n); for(let k = 0; k < n; k++){ L[k] = a[2 * k] / 32767; R[k] = a[2 * k + 1] / 32767; } return { L, R }; });
+  return lpIdb("readwrite", st=>st.put({ sr:tp.sr, tracks }, "tapes"));
+}
+/* --- tempo --- */
+const lpBarSec = ()=>4 * 60 / ((S33mods.lp.clockBpm && S33mods.lp.clockBpm()) || CLK.bpm);
+const lpClocked = ()=>clockConnected("lp");
+function lpMaster(){ return LPT.find(t=>t.len && (t.mode === "play" || t.mode === "dub")) || null; }
+/* il prossimo punto della griglia: la battuta del Clock, o il giro del primo loop, o subito */
+function lpGrid(){
+  const now = ctx.currentTime + .03, g = S33mods.lp.clockNext && S33mods.lp.clockNext(now, 4); if(g) return g[0];
+  const m = lpMaster(); if(m){ const o = m.org / LP.sr, u = S.lp.free ? m.len / LP.sr : lpBarSec(); return o + Math.ceil((now - o) / u - 1e-6) * u; }
+  return now;
+}
+const lpWaitingClock = ()=>lpClocked() && !CLK.running;
+const lpF = t=>Math.round(t * LP.sr);
+const lpLocked = ()=>LPT.some(t=>t.len > 0 || t.mode === "rec");
+/* --- comandi delle tracce --- */
+function lpSend(m){ if(LP.node) LP.node.port.postMessage(m); }
+async function lpAct(i, a){
+  await lpEngine(); lpWire(); const t = LPT[i], tr = S.lp.tr[i];
+  S.lp.sel = i;
+  if(a === "rec"){
+    if(t.pend === "rec"){ t.pend = null; lpSend({ c:"cancel", i }); lpDraw(); return; }
+    if(t.mode === "rec"){ lpSend({ c:"close", i, at:lpF(ctx.currentTime + .01) }); return; }
+    const m = lpMaster(), len = S.lp.free ? (m && m !== t ? m.len : 0) : lpF(S.lp.bars * lpBarSec());
+    t.pend = "rec"; lpDraw();
+    if(lpWaitingClock()){ t.wait = { c:"rec", len, src:tr.src }; return; }
+    lpSend({ c:"rec", i, at:lpF(lpGrid()), len, src:tr.src }); return;
+  }
+  if(a === "play"){
+    if(t.mode === "rec"){ lpSend({ c:"close", i, at:lpF(ctx.currentTime + .01) }); return; }
+    if(t.mode === "dub"){ lpSend({ c:"play", i, at:lpF(ctx.currentTime + .01) }); return; }
+    if(t.mode === "play"){ lpSend({ c:"stop", i, at:lpF(ctx.currentTime + .01) }); return; }
+    if(t.mode === "stop"){ if(t.pend === "play"){ t.pend = null; lpSend({ c:"cancel", i }); lpDraw(); return; }
+      t.pend = "play"; lpDraw(); if(lpWaitingClock()){ t.wait = { c:"play" }; return; } lpSend({ c:"play", i, at:lpF(lpGrid()) }); }
+    return;
+  }
+  if(a === "dub"){
+    if(t.mode === "dub"){ lpSend({ c:"play", i, at:lpF(ctx.currentTime + .01) }); return; }
+    if(t.mode === "play"){ lpSend({ c:"dub", i, at:lpF(ctx.currentTime + .01), src:tr.src }); return; }
+    if(t.mode === "stop"){ t.pend = "dub"; lpDraw(); if(lpWaitingClock()){ t.wait = { c:"dub", src:tr.src }; return; } lpSend({ c:"dub", i, at:lpF(lpGrid()), src:tr.src }); }
+    return;
+  }
+  if(a === "undo"){ t.pend = null; t.wait = null; lpSend({ c:"undo", i }); return; }
+  if(a === "eject"){ t.pend = null; t.wait = null; lpSend({ c:"eject", i }); return; }
+}
+/* il Clock: Stop ferma i loop, Play li fa ripartire dall'inizio sul primo battito */
+S33mods.lp.onTransport = run=>{
+  if(!LP.node) return;
+  if(run){ const at = lpF(CLK.origin);
+    LPT.forEach((t, i)=>{ if(t.wait){ const w = t.wait; t.wait = null; if(w.c === "rec") lpSend({ c:"rec", i, at, len:w.len, src:w.src }); else if(w.c === "dub") lpSend({ c:"dub", i, at, src:w.src }); else lpSend({ c:"play", i, at, org:at }); }
+      else if(t.wasPlaying){ t.wasPlaying = false; lpSend({ c:"play", i, at, org:at }); } }); }
+  else { const at = lpF(ctx.currentTime + .005);
+    LPT.forEach((t, i)=>{ if(t.mode === "play" || t.mode === "dub"){ t.wasPlaying = true; lpSend({ c:"stop", i, at }); } else if(t.mode === "rec") lpSend({ c:"stop", i, at }); }); }
+};
+/* footswitch: il pedale del sustain (CC 64) da una tastiera collegata a un MIDI In */
+let lpPed = false;
+function lpMidi(data){
+  if(!S.mods.lp || !S.lp.foot) return;
+  if((data[0] & 0xF0) !== 0xB0 || data[1] !== 64) return;
+  const on = data[2] >= 64; if(on === lpPed) return; lpPed = on; if(!on) return;
+  const i = S.lp.sel, t = LPT[i];
+  if(t.mode === "empty" || t.pend === "rec") lpAct(i, "rec");
+  else if(t.mode === "rec") lpAct(i, "play");
+  else if(t.mode === "play") lpAct(i, "dub");
+  else lpAct(i, "play");
+}
+/* il BPM resta fermo finché c'è nastro inciso (i loop non seguirebbero il tempo) */
+const lpSetBpm0 = setBpm;
+setBpm = function(b, fromMidi){ if(!fromMidi && S.mods && S.mods.lp && lpLocked() && Math.abs(b - CLK.bpm) > .01){ lpNote("BPM locked: there is tape on the Looper (EJECT to change the tempo)"); return; } return lpSetBpm0(b, fromMidi); };
+function lpNote(t){ if(typeof sessMsg === "function") sessMsg(t); if(lpUI.msg){ lpUI.msg.textContent = t; clearTimeout(lpUI.msg._t); lpUI.msg._t = setTimeout(()=>lpUI.msg.textContent = "", 3500); } }
+/* --- export --- */
+function lpWav(L, R, name){ const n = L.length; download(new Blob([wavHeader24(n, LP.sr), pack24(L, R)], { type:"audio/wav" }), name); }
+function lpStamp(){ const d = new Date(), p = n=>String(n).padStart(2, "0"); return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + "." + p(d.getMinutes()); }
+function lpExport(i){ const t = LPT[i]; if(!t.L) return; lpWav(t.L, t.R, `S33 Looper ${lpStamp()} - ${S.lp.tr[i].label || "Track " + (i + 1)}.wav`); }
+function lpMixdown(){
+  const on = LPT.map((t, i)=>t.L && !S.lp.tr[i].mute ? i : -1).filter(i=>i >= 0); if(!on.length){ lpNote("Nothing to mix: the tapes are empty"); return; }
+  const n = Math.max(...on.map(i=>LPT[i].len)), L = new Float32Array(n), R = new Float32Array(n);
+  on.forEach(i=>{ const t = LPT[i], g = Math.pow(S.lp.tr[i].vol / 100, 1.6) * 1.2; for(let k = 0; k < n; k++){ const p = k % t.len; L[k] += t.L[p] * g; R[k] += t.R[p] * g; } });
+  lpWav(L, R, `S33 Looper ${lpStamp()} - mixdown.wav`);
+}
+/* --- ingressi dalla scheda: il cavo si fa da qui --- */
+function lpSources(){ return Object.keys(S.mods).filter(id=>id !== "lp" && DEFS[id] && DEFS[id].ports.some(q=>q.dir === "out" && q.t === "audio")); }
+function lpPatch(port, src){
+  for(let k = S.cables.length - 1; k >= 0; k--){ const c = S.cables[k]; if(c.b.m === "lp" && c.b.p === port) removeCable(k); }
+  if(src){ const q = DEFS[src].ports.find(q=>q.dir === "out" && q.t === "audio"); if(q) addCable({ m:src, p:q.p }, { m:"lp", p:port }); }
+  save(); if(typeof render === "function") render(); lpDraw();
+}
+const lpPatched = port=>{ const c = S.cables.find(c=>c.b.m === "lp" && c.b.p === port); return c ? c.a.m : ""; };
+/* --- scheda --- */
+const lpUI = {};
+function lpUIBuild(bd){
+  bd.innerHTML = `<div class="lp-deck">
+  <div class="lp-top">
+    <div class="lp-brand"><span class="n">LOOPER</span><span class="s">4-TRACK CASSETTE · S33</span><span class="st"><i style="background:#e2402f"></i><i style="background:#f08a24"></i><i style="background:#f2c230"></i><i style="background:#2fb3a6"></i></span></div>
+    <div class="lp-ctr" title="Bar and beat"><div class="d"><span>0</span><span>0</span><span>1</span><span class="dot">.</span><span>1</span></div><small>BAR<br>BEAT</small></div>
+    <div class="lp-g"><span class="lp-cap">TAPE LENGTH</span><div class="lp-opts" id="lpLen"></div></div>
+    <span style="flex:1"></span>
+    <div class="lp-g"><span class="lp-cap">SYNC</span><span class="lp-pill" id="lpSync"><i></i><b></b></span></div>
+    <div class="lp-g"><span class="lp-cap">FOOTSWITCH</span><span class="lp-pill lp-click" id="lpFoot" title="The sustain pedal of a keyboard on a MIDI In: REC → PLAY → DUB on the selected track"><i></i><b></b></span></div>
+  </div>
+  <div class="lp-tracks" id="lpTr"></div>
+  <div class="lp-bot">
+    <span class="lp-cap">IN 1</span><select id="lpIn1" title="What IN 1 records"></select><span class="lp-cap">IN 2</span><select id="lpIn2" title="What IN 2 records"></select>
+    <span class="lp-cap" style="margin-left:8px">FEEDBACK ON DUB</span><input type="range" id="lpFb" min="50" max="100" step="1" title="How much of the old tape stays when you overdub"><span class="lp-cap" id="lpFbV"></span>
+    <span class="lp-msg" id="lpMsg"></span><span style="flex:1"></span>
+    <button class="lp-btn" id="lpUndoAll" title="Undo the last layer on every track">⟲ UNDO ALL</button><button class="lp-btn" id="lpEjAll" title="Empty every track (click twice)">⏏ EJECT ALL</button><button class="lp-btn lp-hot" id="lpMix" title="All the tracks in one WAV">⤓ MIXDOWN WAV</button>
+  </div></div>`;
+  const q = s=>bd.querySelector(s);
+  Object.assign(lpUI, { bd, digits:[...bd.querySelectorAll(".lp-ctr .d span:not(.dot)")], sync:q("#lpSync"), foot:q("#lpFoot"), msg:q("#lpMsg"), tr:[] });
+  q("#lpLen").innerHTML = [[1,"1 BAR"],[2,"2"],[4,"4 BARS"],[8,"8"],[0,"FREE"]].map(([v, l])=>`<span data-v="${v}">${l}</span>`).join("");
+  q("#lpLen").querySelectorAll("span").forEach(s=>s.onclick=()=>{ const v = +s.dataset.v; if(v){ S.lp.bars = v; S.lp.free = false; } else S.lp.free = true; save(); lpDraw(); });
+  lpUI.foot.onclick = ()=>{ S.lp.foot = !S.lp.foot; save(); lpDraw(); };
+  const fb = q("#lpFb"); fb.value = S.lp.fb; q("#lpFbV").textContent = S.lp.fb + "%";
+  fb.oninput = ()=>{ S.lp.fb = +fb.value; q("#lpFbV").textContent = S.lp.fb + "%"; lpSend({ c:"fb", v:S.lp.fb / 100 }); save(); };
+  q("#lpIn1").onchange = e=>lpPatch("in1", e.target.value); q("#lpIn2").onchange = e=>lpPatch("in2", e.target.value);
+  q("#lpUndoAll").onclick = ()=>[0,1,2,3].forEach(i=>LPT[i].len && lpAct(i, "undo"));
+  const ej = q("#lpEjAll"); ej.onclick = ()=>{ if(!ej.classList.contains("warn")){ ej.classList.add("warn"); ej.textContent = "SURE?"; clearTimeout(ej._t); ej._t = setTimeout(()=>{ ej.classList.remove("warn"); ej.textContent = "⏏ EJECT ALL"; }, 2500); return; }
+    ej.classList.remove("warn"); ej.textContent = "⏏ EJECT ALL"; [0,1,2,3].forEach(i=>lpAct(i, "eject")); };
+  q("#lpMix").onclick = lpMixdown;
+  const T = q("#lpTr");
+  for(let i = 0; i < 4; i++){
+    const st = LP_STRIPES[i], el = document.createElement("div"); el.className = "lp-trk"; el.dataset.i = i;
+    el.innerHTML = `<div class="lp-th"><b>TRACK ${i + 1}</b><em></em><span class="lp-led"></span></div>
+      <div class="lp-cas"><span class="scr" style="left:5px;top:5px"></span><span class="scr" style="right:5px;top:5px"></span><span class="scr" style="left:5px;bottom:5px"></span><span class="scr" style="right:5px;bottom:5px"></span>
+        <div class="lp-lab"><div class="stp">${st.map(c=>`<i style="background:${c}"></i>`).join("")}</div><span class="ab"></span><span class="side">${i < 2 ? "A" : "B"}</span><span class="hw" contenteditable="true" spellcheck="false" title="Write a name"></span>
+          <div class="win"><span class="tp"></span><span class="pack l"></span><span class="pack r"></span><span class="reel" style="left:12px"></span><span class="reel" style="right:12px"></span></div></div>
+        <canvas class="lp-wave"></canvas><div class="holes"><i></i><i></i></div></div>
+      <canvas class="lp-vu"></canvas>
+      <div class="lp-keys"><span class="k rec" data-a="rec" title="Record (on the next bar)"><s>●</s>REC</span><span class="k play" data-a="play" title="Play / stop"><s>▶</s>PLAY</span><span class="k dub" data-a="dub" title="Overdub: record on top"><s>⊕</s>DUB</span><span class="k" data-a="undo" title="Remove the last layer"><s>⟲</s>UNDO</span><span class="k" data-a="eject" title="Empty this track"><s>⏏</s>EJECT</span></div>
+      <div class="lp-mix"><span class="lp-cap">VOL</span><input type="range" min="0" max="100" class="vol"><span class="sm m" title="Mute">M</span><span class="sm src" title="Which input this track records: IN 1, IN 2 or both"></span><span class="sm ex" title="Export this track as WAV">⤓</span></div>`;
+    T.appendChild(el);
+    const u = { el, em:el.querySelector(".lp-th em"), led:el.querySelector(".lp-led"), ab:el.querySelector(".ab"), hw:el.querySelector(".hw"), reels:[...el.querySelectorAll(".reel")], packs:[...el.querySelectorAll(".pack")], tp:el.querySelector(".tp"),
+      wave:el.querySelector(".lp-wave"), vu:el.querySelector(".lp-vu"), keys:{}, vol:el.querySelector(".vol"), m:el.querySelector(".m"), src:el.querySelector(".src"), rot:0, nd:-1 };
+    el.querySelectorAll(".k").forEach(k=>{ u.keys[k.dataset.a] = k; k.onclick = e=>{ e.stopPropagation(); lpAct(i, k.dataset.a); }; });
+    el.onpointerdown = ()=>{ if(S.lp.sel !== i){ S.lp.sel = i; save(); lpDraw(); } };
+    u.hw.textContent = S.lp.tr[i].label; u.hw.onblur = ()=>{ S.lp.tr[i].label = u.hw.textContent.trim().slice(0, 24); save(); }; u.hw.onkeydown = e=>{ if(e.key === "Enter"){ e.preventDefault(); u.hw.blur(); } e.stopPropagation(); };
+    u.vol.value = S.lp.tr[i].vol; u.vol.oninput = ()=>{ S.lp.tr[i].vol = +u.vol.value; lpGains(); save(); };
+    u.m.onclick = ()=>{ S.lp.tr[i].mute = !S.lp.tr[i].mute; lpGains(); save(); lpDraw(); };
+    u.src.onclick = ()=>{ S.lp.tr[i].src = (S.lp.tr[i].src + 1) % 3; save(); lpDraw(); };
+    el.querySelector(".ex").onclick = ()=>lpExport(i);
+    lpUI.tr.push(u);
+  }
+  lpDraw();
+}
+function lpDraw(){
+  if(!lpUI.bd) return;
+  lpUI.bd.querySelectorAll("#lpLen span").forEach(s=>{ const v = +s.dataset.v; s.classList.toggle("on", v ? !S.lp.free && S.lp.bars === v : S.lp.free); });
+  const ck = lpClocked(), lk = lpLocked();
+  lpUI.sync.querySelector("b").textContent = (ck ? "CLOCK" : "FREE TEMPO") + (lk ? " · BPM LOCKED" : "");
+  lpUI.sync.classList.toggle("on", ck);
+  lpUI.foot.querySelector("b").textContent = S.lp.foot ? "SUSTAIN PEDAL" : "OFF"; lpUI.foot.classList.toggle("on", S.lp.foot);
+  const fill = (sel, port)=>{ const e = lpUI.bd.querySelector(sel), cur = lpPatched(port), opts = lpSources();
+    e.innerHTML = `<option value="">—</option>` + opts.map(id=>`<option value="${id}">${esc(DEFS[id].name)}</option>`).join(""); e.value = opts.includes(cur) ? cur : ""; };
+  fill("#lpIn1", "in1"); fill("#lpIn2", "in2");
+  lpUI.tr.forEach((u, i)=>{ const t = LPT[i], tr = S.lp.tr[i];
+    const st = t.pend === "rec" ? (lpWaitingClock() ? "REC · WAITING FOR PLAY" : "REC · WAITING FOR THE BAR") : t.pend === "play" ? "PLAY · ON THE BAR" : t.pend === "dub" ? "DUB · ON THE BAR"
+      : t.mode === "rec" ? "RECORDING" : t.mode === "dub" ? "DUB · LAYER " + (t.layers + 1) : t.mode === "play" ? "PLAY" : t.mode === "stop" ? "STOPPED" : "EMPTY";
+    u.em.textContent = st;
+    u.led.className = "lp-led " + (t.mode === "rec" || t.pend === "rec" ? "r" + (t.pend ? " bl" : "") : t.mode === "dub" || t.pend === "dub" ? "o" : t.mode === "play" ? "g" : "");
+    const bars = t.len ? t.len / LP.sr / lpBarSec() : 0;
+    u.ab.textContent = t.len ? (Math.abs(bars - Math.round(bars)) < .02 ? Math.round(bars) + (Math.round(bars) === 1 ? " BAR" : " BARS") : (t.len / LP.sr).toFixed(1) + " SEC") + " · " + (t.layers + 1) + (t.layers ? " LAYERS" : " LAYER") : "BLANK TAPE";
+    u.el.classList.toggle("sel", S.lp.sel === i); u.el.classList.toggle("blank", !t.len && t.mode !== "rec");
+    Object.entries(u.keys).forEach(([a, k])=>k.classList.toggle("dn", (a === "rec" && (t.mode === "rec" || t.pend === "rec")) || (a === "play" && t.mode === "play") || (a === "dub" && (t.mode === "dub" || t.pend === "dub"))));
+    u.m.classList.toggle("on", tr.mute); u.src.textContent = ["IN 1","IN 2","1+2"][tr.src];
+    u.nd = -1; });
+}
+function lpFrame(){
+  if(!lpUI.bd || !P.lp || !P.lp.el.classList.contains("open")) return;
+  const now = ctx ? ctx.currentTime : 0, sr = LP.sr;
+  // contanastri: la posizione del Clock, o del loop selezionato
+  let pos = 0; if(CLK.running) pos = Math.max(0, clkPos(now)); else { const t = LPT[S.lp.sel]; if(t.len && (t.mode === "play" || t.mode === "dub")) pos = ((now * sr - t.org) % t.len + t.len) % t.len / sr * 4 / lpBarSec(); else if(t.mode === "rec") pos = t.len ? 0 : (now * sr - t.org) / sr * 4 / lpBarSec(); }
+  const bar = Math.floor(pos / 4) + 1, beat = Math.floor(pos % 4) + 1, s = String(bar % 1000).padStart(3, "0") + beat;
+  lpUI.digits.forEach((d, k)=>{ if(d.textContent !== s[k]) d.textContent = s[k]; });
+  lpUI.tr.forEach((u, i)=>{ const t = LPT[i], run = t.mode === "play" || t.mode === "dub" || t.mode === "rec", wait = !!t.pend;
+    let ph = -1; if(t.len && (t.mode === "play" || t.mode === "dub")) ph = ((now * sr - t.org) % t.len + t.len) % t.len / t.len;
+    if(t.mode === "rec"){ const cap = t.len || 0; ph = cap ? Math.min(1, (now * sr - t.org) / cap) : -1; }
+    u.rot += run ? 2.2 : wait ? 9 : 0; u.reels.forEach(r=>r.style.transform = `rotate(${u.rot}deg)`);
+    const f = ph >= 0 ? ph : t.len ? 0 : 0, lp = 18 + (1 - f) * 10, rp = 18 + f * 10;
+    u.packs[0].style.cssText = t.len || t.mode === "rec" ? `left:${30 - lp / 2}px;width:${lp + 12}px;height:${lp + 12}px;top:${13 - lp / 2}px` : "display:none";
+    u.packs[1].style.cssText = t.len || t.mode === "rec" ? `right:${30 - rp / 2}px;width:${rp + 12}px;height:${rp + 12}px;top:${13 - rp / 2}px` : "display:none";
+    u.tp.style.display = t.len || t.mode === "rec" ? "" : "none";
+    // forma d'onda e testina
+    const cv = u.wave, w = cv.clientWidth * 2, h = cv.clientHeight * 2; if(cv.width !== w){ cv.width = w; cv.height = h; u.nd = -1; }
+    const key = (t.peaks ? t.peaks.length + ":" + t.layers + ":" + t.len : "e") + ":" + Math.round(ph * w);
+    if(key !== u.nd){ u.nd = key; const c = cv.getContext("2d"); c.clearRect(0, 0, w, h);
+      if(t.peaks){ const n = t.peaks.length, bw = w / n; c.fillStyle = "#cfc8b6";
+        for(let k = 0; k < n; k++){ const v = Math.max(2, Math.min(1, t.peaks[k] * 1.6) * h * .9); c.globalAlpha = ph >= 0 && k / n < ph ? .95 : .55; c.fillRect(k * bw + .5, (h - v) / 2, Math.max(1, bw - 1), v); } c.globalAlpha = 1; }
+      else { c.strokeStyle = "#5a5750"; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(0, h / 2); c.lineTo(w, h / 2); c.stroke(); c.setLineDash([]); }
+      if(ph >= 0){ c.fillStyle = t.mode === "rec" ? "#ff5a44" : "#fff"; c.shadowColor = c.fillStyle; c.shadowBlur = 8; c.fillRect(ph * w - 1.5, 0, 3, h); c.shadowBlur = 0; } }
+    // VU a lancetta
+    const a = LP.an[i]; let lv = -60; if(a){ a.getFloatTimeDomainData(lpBuf); let m = 0; for(let k = 0; k < lpBuf.length; k++){ const v = Math.abs(lpBuf[k]); if(v > m) m = v; } lv = m > 1e-5 ? 20 * Math.log10(m) : -60; }
+    u.vuL = (u.vuL == null ? -40 : u.vuL) + (Math.max(-40, lv) - (u.vuL == null ? -40 : u.vuL)) * (lv > (u.vuL || -40) ? .5 : .12);
+    lpVu(u.vu, u.vuL); });
+  // il modulo nella casa ha le sue bobine (mb_ui.js)
+}
+const lpBuf = new Float32Array(512);
+function lpVu(cv, db){
+  const w = cv.clientWidth * 2, h = cv.clientHeight * 2; if(!w) return; if(cv.width !== w){ cv.width = w; cv.height = h; }
+  const c = cv.getContext("2d"), cx = w / 2, cy = h * 1.65, R = h * 1.38, A = d=>(-48 + (Math.max(-20, Math.min(3, d)) + 20) * 96 / 23) * Math.PI / 180;
+  c.clearRect(0, 0, w, h); c.lineWidth = 2;
+  [-20,-10,-7,-5,-3,-1,0,1,2,3].forEach(d=>{ const b = A(d); c.strokeStyle = d > 0 ? "#c0392b" : "#3a3224"; c.beginPath(); c.moveTo(cx + Math.sin(b) * R * .86, cy - Math.cos(b) * R * .86); c.lineTo(cx + Math.sin(b) * R * .97, cy - Math.cos(b) * R * .97); c.stroke(); });
+  c.strokeStyle = "#3a3224"; c.lineWidth = 1.2; c.beginPath(); c.arc(cx, cy, R * .86, -Math.PI / 2 - .84, -Math.PI / 2 + .84); c.stroke();
+  const a = A(db + 6); c.strokeStyle = "#1b1a18"; c.lineWidth = 2.6; c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + Math.sin(a) * R, cy - Math.cos(a) * R); c.stroke();
+  c.fillStyle = "#3a3224"; c.font = "800 16px sans-serif"; c.fillText("VU", 14, h - 10);
+}
+function lpOpen(){ lpEngine().then(()=>{ lpWire(); lpDraw(); }); }
+(function lpLoop(){ requestAnimationFrame(lpLoop); try{ lpFrame(); }catch(e){} })();
+setInterval(()=>{ if(S.mods && S.mods.lp && ctx && !LP.ready) lpEngine(); if(LP.node) lpWire(); if(lpUI.bd && P.lp && P.lp.el.classList.contains("open")) lpDraw(); }, 1000);
+
 /* ===== Sessioni =====
    Board e strumenti salvano già il loro stato nel browser (stessa origine della board).
    Una sessione è l'istantanea di quelle voci in un file JSON; aprirla le riscrive e ricarica la pagina.
@@ -1691,7 +2102,7 @@ async function sessSnapshot(){
   await new Promise(res=>setTimeout(res, 450));            // gli strumenti salvano con un piccolo ritardo
   const storage = {}; SESSION_KEYS.forEach(k=>{ let v = null; try{ v = localStorage.getItem(k); }catch(e){} storage[k] = v; });
   let gr = null; try{ const g = S33mods.gr; if(g && g.getScene) gr = g.getScene(); }catch(e){ console.warn(e); }
-  return { format:"s33-motherboard-session", version:1, name:sessName, saved:new Date().toISOString(), bpm:CLK.bpm, storage, gr };
+  return { format:"s33-motherboard-session", version:1, name:sessName, saved:new Date().toISOString(), bpm:CLK.bpm, storage, gr, tapes: typeof lpSessTapes === "function" ? await lpSessTapes() : null };
 }
 const fileName = ()=>sessName.replace(/[\\/:*?"<>|]+/g, "-") + ".s33mother.json";
 async function sessWrite(asNew){
@@ -1718,14 +2129,14 @@ function sessApply(obj, handle){
   try{ sessionStorage.setItem("mb-restore", "1"); }catch(e){}
   const go = ()=>{ window.onbeforeunload = null; location.reload(); };
   const hd = ()=>handle ? idb("readwrite", st=>st.put(handle, "handle")) : idb("readwrite", st=>st.delete("handle"));
-  grWrite(obj.gr).then(hd).then(go);
+  grWrite(obj.gr).then(()=>typeof lpWriteTapes === "function" ? lpWriteTapes(obj.tapes) : null).then(hd).then(go);
 }
 /* la Granular tiene stato e campioni nel suo archivio del browser: si sostituiscono con quelli della sessione */
 /* una sessione della S33 Board: stessi strumenti e cavi; i moduli prendono posto sulla griglia */
 function fromBoardSession(o){
   const st = Object.assign({}, o.storage); let b = null; try{ b = JSON.parse(st["s33-board-v2"] || "null"); }catch(e){}
   delete st["s33-board-v2"]; const vol = st["s33-board-v2-vol"]; delete st["s33-board-v2-vol"]; if(vol != null) st[KEY + "-vol"] = vol;
-  const mods = {}, used = ORDER.filter(k=>k !== "midi2" || (b && b.cables || []).some(c=>c.a.m === "midi2"));
+  const mods = {}, used = ORDER.filter(k=>!["split","chord","lp","ac"].includes(k)).filter(k=>k !== "midi2" || (b && b.cables || []).some(c=>c.a.m === "midi2"));
   used.forEach((k, i)=>{ mods[k] = [i % 5, Math.floor(i / 5)]; });
   const ns = { mods, cables:(b && b.cables) || [], mix:b && b.mix, clock:b && b.clock, midiIn:b && b.midiIn, midiOut:b && b.midiOut, rec:b && b.rec };
   st[KEY] = JSON.stringify(ns);
@@ -1793,6 +2204,7 @@ const CAT = {
   midi:{n:"MIDI IN", s:"Keyboard and controllers", g:"svc"}, midi2:{n:"MIDI IN 2", s:"A second controller (LPD8)", g:"svc"},
   split:{n:"MIDI SPLIT", s:"One MIDI channel per output (Logic)", g:"svc"},
   chord:{n:"CHORDS", s:"Chords and arpeggios (MIDI)", g:"svc"},
+  lp:{n:"LOOPER", s:"4-track cassette looper", g:"fx"},
   clock:{n:"CLOCK", s:"Common tempo", g:"svc"}, mixer:{n:"MIXER", s:"Fader, pan, send, mute, solo", g:"svc"},
   outm:{n:"OUTPUT", s:"Limiter, meters, WAV recording", g:"svc"}, mout:{n:"MIDI OUT", s:"To Logic or an IAC bus", g:"svc"}
 };
@@ -1803,7 +2215,7 @@ const INST = ["tc","no","vg","ac","jsb","dm","gr","fm"];
 const cv = document.getElementById("cv"), P = {};
 const NATIVE = ORDER.filter(id=>!DEFS[id].html);
 const FULL = id=>!!DEFS[id].html;
-const NAT_SIZE = { chord:[600,400], split:[440,250], clock:[320,300], midi:[380,170], midi2:[380,170], mout:[380,170], outm:[380,330] };
+const NAT_SIZE = { lp:[1120,548], chord:[600,400], split:[440,250], clock:[320,300], midi:[380,170], midi2:[380,170], mout:[380,170], outm:[380,330] };
 let openK = null;
 function mkPanel(id){
   if(P[id]) return P[id];
@@ -1846,7 +2258,7 @@ function placePanel(id){
 function openModule(k){
   if(!DEFS[k]) return; mkPanel(k); if(openK && openK !== k) P[openK].el.classList.remove("open");
   openK = k; placePanel(k); P[k].el.classList.add("open"); $("#back").classList.add("on"); PEEK.innerHTML = "";
-  hint(DEFS[k].name + " is open · Esc or ← Board to go back");
+  hint(DEFS[k].name + " is open · Esc or ← Board to go back"); if(k === "lp") lpOpen();
   if(P[k].fr) setTimeout(()=>{ try{ P[k].fr.focus(); }catch(e){} }, 50);
 }
 function closeOpen(){ if(!openK) return; P[openK].el.classList.remove("open"); openK = null; $("#back").classList.remove("on"); hint(); }
@@ -1890,6 +2302,7 @@ function autoCable(k){
       if(i >= 0) removeCable(i); L(src, "midiOut", "chord", "in"); if(t) L("chord", "out", t, "midiIn"); }
     else if(!hasOut("chord", "out")){ const t = SYN.find(m=>S.mods[m] && !hasIn(m, "midiIn")); if(t) L("chord", "out", t, "midiIn"); } }
   if(SYN.includes(k) && S.mods.chord && !hasIn(k, "midiIn") && !hasOut("chord", "out")) L("chord", "out", k, "midiIn");
+  if(k === "lp" && S.mods.outm && !hasOut("lp", "out")) L("lp", "out", "outm", "in");
   if(k === "split" && !hasIn("split", "in")){ const src = S.mods.midi ? "midi" : S.mods.midi2 ? "midi2" : null; if(src) L(src, "midiOut", "split", "in"); }
   if(k === "midi2"){ const t = ["gr","vg"].find(m=>S.mods[m] && !hasIn(m, "midiIn")); if(t) L("midi2", "midiOut", t, "midiIn"); }
   if(k === "gr" && S.mods.midi2 && !hasIn("gr", "midiIn")) L("midi2", "midiOut", "gr", "midiIn");
@@ -2114,7 +2527,7 @@ function mbFlushAll(){ Object.keys(held).forEach(mbFlush); }
 /* Panic: ogni nota di ogni canale chiusa una per una, più All Notes Off, a tutti i moduli */
 function mbPanic(){ ORDER.forEach(id=>{ if(S33mods[id].midiInput && S33mods[id].midiInput.onmidimessage) for(let ch = 0; ch < 16; ch++) for(let n = 0; n < 128; n++) sendTo(id, [0x80 | ch, n, 0]); allNotesOff(id); });
   Object.keys(held).forEach(id=>held[id].clear()); hint("Panic: every note stopped"); }
-function mbMidiIn(id, data){ if(!S.mods[id]) return; blink[id] = performance.now(); if((data[0] & 0xF0) === 0x90 && data[2] > 0) lastNote[id] = data[1]; }
+function mbMidiIn(id, data){ if(!S.mods[id]) return; if(typeof lpMidi === "function") lpMidi(data); blink[id] = performance.now(); if((data[0] & 0xF0) === 0x90 && data[2] > 0) lastNote[id] = data[1]; }
 const clocked = k=>clockConnected(k);
 let beatN = 0, beatT = 0, lastB = -1, six = 0, sendAn = null;
 const abuf = new Float32Array(1024), hold = {};
@@ -2196,6 +2609,14 @@ const PORT = {
     return (now, l)=>gs.forEach(e=>{ if(Math.random() < .08){ e.setAttribute("cx", x + w * (.3 + Math.random() * .36)); e.setAttribute("cy", y + 4 + Math.random() * 22); e.setAttribute("opacity", (l > .15 ? .4 + l * .6 : 0).toFixed(2)); } }); },
   sb:(g,x,y,w,h,c)=>{ const pw = (w - 9) / 4, leds = []; ["#3a3f45","#3a3f45","#d27a26","#3a3f45"].forEach((f, i)=>{ const xx = x + i * (pw + 3); R(g, xx, y, pw, h - 2, f, {rx:3}); D(g, xx + pw / 2, y + 9, 4, "#1a1a1a", {s:"#000"}); leds.push(D(g, xx + pw / 2, y + 21, 2.2, "#3a2420")); D(g, xx + pw / 2, y + 33, 5, "#777", {s:"#222"}); });
     return (now, l)=>leds.forEach(e=>{ const a = l > .15; e.setAttribute("fill", a ? "#ff5a3a" : "#3a2420"); glow(e, a); }); },
+  lp:(g,x,y,w,h,c)=>{ const cols = ["#e2402f","#f08a24","#f2c230","#2fb3a6"], cw = w / 4, rl = [], st = [];
+    for(let i = 0; i < 4; i++){ const cx = x + i * cw + cw / 2, cy = y + 17, gg = el("g", {}, g); D(gg, cx, cy, 14, "#2a2826", {s:"#6d685d", sw:1.6});
+      for(let k = 0; k < 3; k++){ const a = k * 2.094; el("line", {x1:cx + Math.sin(a) * 4, y1:cy - Math.cos(a) * 4, x2:cx + Math.sin(a) * 11, y2:cy - Math.cos(a) * 11, stroke:"#9a958a", "stroke-width":3, "stroke-linecap":"round"}, gg); }
+      D(gg, cx, cy, 3, "#efe8d6"); rl.push({gg, cx, cy, r:0}); st.push(R(g, x + i * cw + 4, y + 38, cw - 8, 4, "#262421", {rx:2})); }
+    return now=>{ rl.forEach((e, i)=>{ const t = LPT[i], run = t.mode === "play" || t.mode === "dub" || t.mode === "rec";
+        if(run || t.pend) e.r += run ? 3 : 9; e.gg.setAttribute("transform", `rotate(${e.r} ${e.cx} ${e.cy})`); e.gg.setAttribute("opacity", t.len || t.mode === "rec" || t.pend ? 1 : .35);
+        const col = t.mode === "rec" || t.pend === "rec" ? "#e2402f" : t.mode === "dub" ? "#ff7a2f" : t.mode === "play" ? "#5fcf86" : t.len ? "#6d685d" : "#262421";
+        st[i].setAttribute("fill", col); glow(st[i], t.mode === "rec" || t.mode === "dub" || t.mode === "play"); }); }; },
   clock:(g,x,y,w,h,c)=>{ R(g, x, y, w, 28, "#050705", {rx:4}); const t = tx(g, x + w - 10, y + 22, 22, "120", {a:"end", f:"#5fcf86", mono:1, w:600, ls:"1"}); t.setAttribute("filter", "url(#gl)");
     const b = [0,1,2,3].map(i=>D(g, x + 8 + i * 16, y + 37, 3.2, "#1b2f21"));
     return (now, l, LV, run)=>{ const v = CLK.bpm < 100 ? CLK.bpm.toFixed(1) : String(Math.round(CLK.bpm)); if(t.textContent !== v) t.textContent = v;
@@ -2308,6 +2729,7 @@ let rzT = 0; addEventListener("resize", ()=>{ clearTimeout(rzT); rzT = setTimeou
 NATIVE.forEach(mkPanel);
 Object.keys(S.mods).forEach(k=>{ if(DEFS[k].html) mkPanel(k); });
 rebuildMixer(); sessUI(); render(); hint();
+(()=>{ const c = $("#tapes input"); if(!c) return; c.checked = S.lp.tapes; c.onchange = ()=>{ S.lp.tapes = c.checked; save(); }; })();
 if(MB_RESTORE && Object.keys(S.mods).length) hint("Session opened · click anywhere to start the audio");
 if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) addEventListener("load", ()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
 
