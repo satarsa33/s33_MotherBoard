@@ -1,5 +1,12 @@
-S33 - MOTHER BOARD · v0.11
+S33 - MOTHER BOARD · v0.12
 ==========================
+
+Correzioni della 0.12
+  - Twin Core: l'arpeggio (e le note tenute) non si fermano più quando si chiude il modulo con Esc
+    o si passa a un altro modulo. Twin Core chiudeva tutte le note appena la sua finestra perdeva il
+    fuoco; nella Mother Board ora rilascia solo i tasti premuti sulla tastiera del Mac
+    (la correzione è in build/mb_embed.py: l'app Twin Core resta com'è).
+  - Looper: i menu IN 1 / IN 2 non si chiudono più da soli (si ridisegnavano ogni secondo).
 
 Novità della 0.11 · LOOPER (4 tracce a cassetta)
   Un modulo nuovo nella lista (gruppo effetti): prese IN 1, IN 2, CLK e OUT. Aggiungendolo, il Clock
@@ -48,7 +55,7 @@ Novità della 0.9 · ACID (bass line)
 Novità della 0.8 · APP (PWA)
   La Mother Board si installa come un'app: icona nel Dock, finestra sua, funziona anche offline.
   Il service worker ha bisogno di un indirizzo http, non di un file aperto con doppio clic:
-    1. Terminale:  cd ~/Desktop/S33_Project/"s33_Mother Board"/v0.11
+    1. Terminale:  cd ~/Desktop/S33_Project/"s33_Mother Board"/v0.12
                    python3 -m http.server 8033
     2. Chrome:     http://localhost:8033
     3. Menu ⋮ → "Trasmetti, salva e condividi" → "Installa S33 - Mother Board"
@@ -165,7 +172,7 @@ RICOSTRUIRE (cartella build; il modulo Chords è in build/mb_chord.js)
   Il template nasce da quello della Board, poi gli strumenti si incorporano con il build.py della Board:
   cd "s33_Mother Board"
   python3 build/mb_make.py "../s33 - Board/build/board-template.html" build/mb_ui.css build/mb_ui.html build/mb_ui.js build/mb-template.html
-  python3 "../s33 - Board/build/build.py" "../s33 - Twin Core/v9 (1.0.2)/index.html" "../s33_Stompbox/v3/index.html" "../s33_Drum Machine/s33-Drum Machine-L02/v1 (1.0.0)/index.html" "../s33 - Nostos One Synth/v7 (1.5.0)/index.html" "../s33 - JSB/v9/index.html" "../s33_Granular/s33_Granular Machine/v4 (Board)/index.html" "../s33_Vega/v9 (1.2.0)/index.html" build/mb-template.html "v0.11/index.html"
-  python3 build/mb_embed.py "../s33_Acid/v1 (1.0.0)/index.html" v0.11/index.html
+  python3 "../s33 - Board/build/build.py" "../s33 - Twin Core/v9 (1.0.2)/index.html" "../s33_Stompbox/v3/index.html" "../s33_Drum Machine/s33-Drum Machine-L02/v1 (1.0.0)/index.html" "../s33 - Nostos One Synth/v7 (1.5.0)/index.html" "../s33 - JSB/v9/index.html" "../s33_Granular/s33_Granular Machine/v4 (Board)/index.html" "../s33_Vega/v9 (1.2.0)/index.html" build/mb-template.html "v0.12/index.html"
+  python3 build/mb_embed.py "../s33_Acid/v1 (1.0.0)/index.html" v0.12/index.html
   (poi accanto a index.html i file di build/pwa, con VERSIONE nuova in sw.js)
   I moduli Chords e Looper sono in build/mb_chord.js e build/mb_looper.js: mb_make.py li inserisce da solo.
