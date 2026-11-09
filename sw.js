@@ -1,5 +1,5 @@
 /* S33 - Mother Board: funziona anche offline. Dopo ogni aggiornamento cambia VERSIONE. */
-const VERSIONE = "s33-motherboard-0.12";
+const VERSIONE = "s33-motherboard-0.13";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon.svg", "./icons/icon-192.png", "./icons/icon-512.png",
   "./icons/icon-maskable-512.png", "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];
 /* all'installazione scarica sempre i file freschi, non dalla cache HTTP del browser */
