@@ -1,5 +1,21 @@
-S33 - MOTHER BOARD · v0.14
+S33 - MOTHER BOARD · v0.15
 ==========================
+
+Correzioni della 0.15 · MIDI CLOCK DI LOGIC
+  - Muovendo i fader del Mixer (o con il browser impegnato) il brano rallentava e niente era più
+    a tempo. Il Clock su "MIDI clock" calcolava il BPM dagli ultimi impulsi di Logic: se qualcuno
+    arrivava in ritardo, il tempo scendeva (bastano 10 ms per perdere più di 1 BPM) e la board si
+    riagganciava al tempo sbagliato, restando sfasata anche dopo (in prova: 50 ms dietro).
+    Ora il Clock:
+      · calcola il tempo su quattro battiti, ignorando gli impulsi arrivati tardi, e lo cambia
+        solo se due battiti di fila lo confermano;
+      · tiene la griglia agganciata agli impulsi di Logic, non al tempo stimato: un impulso in
+        ritardo non la sposta, e se si sfasa rientra da sola.
+    In prova, con impulsi in ritardo fino a 70 ms per otto secondi: BPM fermo e griglia entro
+    pochi millisecondi. Un cambio di tempo vero in Logic (118 → 130) viene seguito in due battiti.
+  - Start e Continue di Logic: la board parte sul primo impulso dopo il comando (come vuole il MIDI).
+  - Mixer: ogni movimento di un fader tocca solo il canale che cambia (prima rimandava volume, pan
+    e mandata di tutti i canali a ogni pixel, e i comandi si accumulavano nel motore audio).
 
 Correzioni della 0.14
   - Drum Machine (L02 v1.2): la batteria non è più in ritardo rispetto agli altri strumenti.
@@ -73,7 +89,7 @@ Novità della 0.9 · ACID (bass line)
 Novità della 0.8 · APP (PWA)
   La Mother Board si installa come un'app: icona nel Dock, finestra sua, funziona anche offline.
   Il service worker ha bisogno di un indirizzo http, non di un file aperto con doppio clic:
-    1. Terminale:  cd ~/Desktop/S33_Project/"s33_Mother Board"/v0.14
+    1. Terminale:  cd ~/Desktop/S33_Project/"s33_Mother Board"/v0.15
                    python3 -m http.server 8033
     2. Chrome:     http://localhost:8033
     3. Menu ⋮ → "Trasmetti, salva e condividi" → "Installa S33 - Mother Board"
@@ -190,7 +206,7 @@ RICOSTRUIRE (cartella build; il modulo Chords è in build/mb_chord.js)
   Il template nasce da quello della Board, poi gli strumenti si incorporano con il build.py della Board:
   cd "s33_Mother Board"
   python3 build/mb_make.py "../s33 - Board/build/board-template.html" build/mb_ui.css build/mb_ui.html build/mb_ui.js build/mb-template.html
-  python3 "../s33 - Board/build/build.py" "../s33 - Twin Core/v9 (1.0.2)/index.html" "../s33_Stompbox/v3/index.html" "../s33_Drum Machine/s33-Drum Machine-L02/v1.2 (1.2.0)/index.html" "../s33 - Nostos One Synth/v7 (1.5.0)/index.html" "../s33 - JSB/v9/index.html" "../s33_Granular/s33_Granular Machine/v4 (Board)/index.html" "../s33_Vega/v9 (1.2.0)/index.html" build/mb-template.html "v0.14/index.html"
-  python3 build/mb_embed.py "../s33_Acid/v1 (1.0.0)/index.html" v0.14/index.html
+  python3 "../s33 - Board/build/build.py" "../s33 - Twin Core/v9 (1.0.2)/index.html" "../s33_Stompbox/v3/index.html" "../s33_Drum Machine/s33-Drum Machine-L02/v1.2 (1.2.0)/index.html" "../s33 - Nostos One Synth/v7 (1.5.0)/index.html" "../s33 - JSB/v9/index.html" "../s33_Granular/s33_Granular Machine/v4 (Board)/index.html" "../s33_Vega/v9 (1.2.0)/index.html" build/mb-template.html "v0.15/index.html"
+  python3 build/mb_embed.py "../s33_Acid/v1 (1.0.0)/index.html" v0.15/index.html
   (poi accanto a index.html i file di build/pwa, con VERSIONE nuova in sw.js)
   I moduli Chords e Looper sono in build/mb_chord.js e build/mb_looper.js: mb_make.py li inserisce da solo.

@@ -1287,17 +1287,39 @@ ORDER.forEach(id=>{ const m = S33mods[id];
   };
 });
 /* MIDI Clock esterno: 24 impulsi per battito, Start / Continue / Stop */
-const mc = { ts:[], armed:false };
+const mc = { ts:[], armed:false, k:0, pts:[], off:null, cand:0, sure:false, lock:false };
+const mcMed = a=>{ const b = a.slice().sort((x, y)=>x - y), n = b.length; return n % 2 ? b[n >> 1] : (b[n / 2 - 1] + b[n / 2]) / 2; };
+/* orologio del Mac (ms) → orologio dell'audio (s): la differenza, mediata, così non ha i gradini di currentTime */
+function mcCtxTime(ts){ const o = ctx.currentTime - performance.now() / 1000; mc.off = mc.off == null || Math.abs(o - mc.off) > 0.05 ? o : mc.off + 0.02 * (o - mc.off); return ts / 1000 + mc.off; }
+function mcTempo(){
+  const P = mc.pts, sl = []; for(let i = 0; i + 24 < P.length; i++) sl.push((P[i + 24][1] - P[i][1]) / 24);
+  if(sl.length < 1) return 0; return Math.round(60 / (mcMed(sl) * 24) * 10) / 10;
+}
+function mcPhase(){
+  if(!CLK.running || !mc.lock || mc.pts.length < 6) return;
+  const per = 60 / (CLK.bpm * 24); let best = Infinity;
+  for(let i = Math.max(0, mc.pts.length - 24); i < mc.pts.length; i++){ const [k, t] = mc.pts[i]; best = Math.min(best, t - k * per); }
+  const err = best - CLK.origin;
+  if(Math.abs(err) > 0.08) CLK.origin = best;           // salto vero (Logic riposizionato): si riaggancia subito
+  else if(Math.abs(err) > 0.0003) CLK.origin += err * 0.15;
+}
 function clockMidi(name, s, ts){
   if(!CLK.src || name !== CLK.src || !ctx) return;
-  const t = ctx.currentTime + (ts - performance.now()) / 1000;
-  if(s === 0xFA){ mc.armed = true; mc.ts = []; return; }
-  if(s === 0xFB){ clockStart(t); return; }
-  if(s === 0xFC){ mc.armed = false; clockStop(); return; }
-  if(mc.armed){ mc.armed = false; clockStart(t); }
-  mc.ts.push(ts); if(mc.ts.length > 49) mc.ts.shift();
-  if(mc.ts.length >= 13){ const n = mc.ts.length - 1, iv = (mc.ts[n] - mc.ts[0]) / n, b = Math.round(60000 / (iv * 24) * 10) / 10;
+  const t = mcCtxTime(ts);
+  if(s === 0xFA || s === 0xFB){ mc.armed = true; mc.pts = []; mc.k = 0; mc.lock = false; return; }   // si parte al primo impulso
+  if(s === 0xFC){ mc.armed = false; mc.lock = false; clockStop(); return; }
+  if(mc.armed){ mc.armed = false; mc.k = 0; mc.pts = []; mc.sure = false; mc.cand = 0; mc.lock = true; clockStart(t); } else mc.k++;
+  mc.pts.push([mc.k, t]); if(mc.pts.length > 97) mc.pts.shift();
+  // primi istanti dopo lo Start: il tempo di Logic si prende subito (12 impulsi, mezzo battito)
+  if(!mc.sure && mc.pts.length === 13){ const P = mc.pts, b = Math.round(60 / ((P[12][1] - P[0][1]) / 12 * 24) * 10) / 10;
     if(Math.abs(b - CLK.bpm) >= 0.3) setBpm(b, true); }
+  // poi, a ogni battito: il tempo cambia solo se due battiti di fila lo confermano
+  if(mc.pts.length >= 25 && mc.k % 24 === 0){
+    const b = mcTempo(); mc.sure = mc.sure || mc.pts.length >= 49;
+    if(b && Math.abs(b - CLK.bpm) >= 0.15){ if(mc.cand && Math.abs(b - mc.cand) < 0.15){ setBpm(Math.round((b + mc.cand) * 5) / 10, true); mc.cand = 0; } else mc.cand = b; }
+    else mc.cand = 0;
+  }
+  mcPhase();
 }
 function fillClockSel(names){
   if(!clkUI) return;
@@ -1355,13 +1377,18 @@ function chainOf(ids){
   const start = ids.slice(); if(ids.some(id=>S.mix[id] && S.mix[id].send > 0)) start.push("mixer");
   return new Set([...walk(start, true), ...walk(ids, false)]);
 }
+function mxSet(p, v){
+  if(p._mx === v) return; p._mx = v; const t = ctx.currentTime;
+  if(p.cancelAndHoldAtTime) try{ p.cancelAndHoldAtTime(t); }catch(e){}
+  p.setTargetAtTime(v, t, 0.015);
+}
 function mixApply(){
   const solos = MIXCH.map(([id])=>id).filter(id=>S.mix[id].s), keep = solos.length ? chainOf(solos) : null;
   MIXCH.forEach(([id])=>{
     const c = S.mix[id], on = !c.m && (!keep || keep.has(id)), d = faderDb(c.v), g = on && d > -Infinity ? Math.pow(10, d / 20) : 0;
-    const m = S33mods[id]; if(m.out && ctx){ m.out.gain.setTargetAtTime(g, ctx.currentTime, 0.015);
-      if(m.pan) m.pan.pan.setTargetAtTime(c.pan / 100, ctx.currentTime, 0.015);
-      if(m.send) m.send.gain.setTargetAtTime(Math.pow(c.send / 100, 2), ctx.currentTime, 0.015); }
+    const m = S33mods[id]; if(m.out && ctx){ mxSet(m.out.gain, g);
+      if(m.pan) mxSet(m.pan.pan, c.pan / 100);
+      if(m.send) mxSet(m.send.gain, Math.pow(c.send / 100, 2)); }
     const u = mxUI[id]; if(u){ u.db.textContent = fmtDb(d); u.m.classList.toggle("on", c.m); u.s.classList.toggle("on", c.s); u.ch.classList.toggle("off", !on); }
   });
 }
