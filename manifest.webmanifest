@@ -1,7 +1,7 @@
 {
   "name": "S33 - Mother Board",
   "short_name": "Mother Board",
-  "description": "The S33 instruments as modules on one mother board: Twin Core, Nostos One, Vega, JSB, Drum Machine, Granular, Stompbox, FM-1, Chords, Acid.",
+  "description": "The S33 instruments as modules on one mother board: Twin Core, Nostos One, Vega, JSB, Drum Machine, Granular, Stompbox, FM-1, Chords, Acid, Hexa, Looper.",
   "lang": "en",
   "id": "s33-mother-board",
   "start_url": "./index.html",
