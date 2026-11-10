@@ -1,5 +1,27 @@
-S33 - MOTHER BOARD · v0.15
+S33 - MOTHER BOARD · v0.16
 ==========================
+
+Correzioni della 0.16 · LE NOTE DI LOGIC A TEMPO
+  - Il problema vero: ogni nota suonava quando il browser riusciva a leggerla. Con la board impegnata
+    (fader, luci, finestre) le note arrivavano in ritardo variabile, e tutto sembrava rallentare.
+    In una registrazione: ottavi dell'hi-hat tra 209 e 289 ms invece di 254, e un ritardo che
+    cresceva di battuta in battuta, fino a 200 ms muovendo i fader.
+  - Ora ogni nota suona all'istante in cui Logic l'ha mandata, più un piccolo anticipo fisso:
+    il TIMING, di serie 50 ms. Finché il browser non resta indietro più di così, il ritmo è quello
+    di Logic. In prova, con il browser bloccato a tratti fino a 45 ms: prima note spostate fino a
+    43 ms, ora entro 2 ms (Drum Machine, Vega, Acid e gli altri).
+  - Il MIDI clock usa lo stesso anticipo, così i sequencer agganciati restano insieme alle note.
+  - TIMING, nel modulo MIDI In: clic per cambiare l'anticipo (0, 10, 20, 30, 50, 80, 120 ms).
+    Se diventa arancione con "LATE" e un numero, negli ultimi 4 secondi qualche nota è arrivata più
+    in ritardo dell'anticipo: alzalo. Per suonare dal vivo con una tastiera conviene 0 o 10.
+    Tutto il suono della board esce in ritardo di quell'anticipo rispetto a Logic: se registri
+    l'audio della board in Logic, spostalo indietro di quei millisecondi (o metti un Delay
+    negativo uguale sulle tracce MIDI esterne).
+  - Le luci che corrono sui cavi non usano più il filtro di sfocatura (il bagliore è disegnato):
+    il filtro andava ricalcolato a ogni fotogramma e teneva occupato il browser.
+  - Accanto al logo c'è il numero di versione, per sapere sempre quale board è aperta.
+  - Vega e Acid nella Mother Board ricevono l'istante della nota (le loro voci sono in un worklet):
+    le modifiche sono in build/patch_0.16_vega.py e patch_0.16_acid.py, le app da sole restano com'erano.
 
 Correzioni della 0.15 · MIDI CLOCK DI LOGIC
   - Muovendo i fader del Mixer (o con il browser impegnato) il brano rallentava e niente era più
@@ -89,7 +111,7 @@ Novità della 0.9 · ACID (bass line)
 Novità della 0.8 · APP (PWA)
   La Mother Board si installa come un'app: icona nel Dock, finestra sua, funziona anche offline.
   Il service worker ha bisogno di un indirizzo http, non di un file aperto con doppio clic:
-    1. Terminale:  cd ~/Desktop/S33_Project/"s33_Mother Board"/v0.15
+    1. Terminale:  cd ~/Desktop/S33_Project/"s33_Mother Board"/v0.16
                    python3 -m http.server 8033
     2. Chrome:     http://localhost:8033
     3. Menu ⋮ → "Trasmetti, salva e condividi" → "Installa S33 - Mother Board"
@@ -206,7 +228,7 @@ RICOSTRUIRE (cartella build; il modulo Chords è in build/mb_chord.js)
   Il template nasce da quello della Board, poi gli strumenti si incorporano con il build.py della Board:
   cd "s33_Mother Board"
   python3 build/mb_make.py "../s33 - Board/build/board-template.html" build/mb_ui.css build/mb_ui.html build/mb_ui.js build/mb-template.html
-  python3 "../s33 - Board/build/build.py" "../s33 - Twin Core/v9 (1.0.2)/index.html" "../s33_Stompbox/v3/index.html" "../s33_Drum Machine/s33-Drum Machine-L02/v1.2 (1.2.0)/index.html" "../s33 - Nostos One Synth/v7 (1.5.0)/index.html" "../s33 - JSB/v9/index.html" "../s33_Granular/s33_Granular Machine/v4 (Board)/index.html" "../s33_Vega/v9 (1.2.0)/index.html" build/mb-template.html "v0.15/index.html"
-  python3 build/mb_embed.py "../s33_Acid/v1 (1.0.0)/index.html" v0.15/index.html
+  python3 "../s33 - Board/build/build.py" "../s33 - Twin Core/v9 (1.0.2)/index.html" "../s33_Stompbox/v3/index.html" "../s33_Drum Machine/s33-Drum Machine-L02/v1.2 (1.2.0)/index.html" "../s33 - Nostos One Synth/v7 (1.5.0)/index.html" "../s33 - JSB/v9/index.html" "../s33_Granular/s33_Granular Machine/v4 (Board)/index.html" "../s33_Vega/v9 (1.2.0)/index.html" build/mb-template.html "v0.16/index.html"
+  python3 build/mb_embed.py "../s33_Acid/v1 (1.0.0)/index.html" v0.16/index.html
   (poi accanto a index.html i file di build/pwa, con VERSIONE nuova in sw.js)
   I moduli Chords e Looper sono in build/mb_chord.js e build/mb_looper.js: mb_make.py li inserisce da solo.
