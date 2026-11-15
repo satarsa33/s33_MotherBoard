@@ -479,13 +479,36 @@ button:hover{border-color:#5a5750}
 .lp-btn.lp-hot{background:linear-gradient(#ffb27c,#ff7a2f)}.lp-btn.warn{background:#e2402f;color:#fff}
 .lp-trk.blank .lp-lab .ab{color:#8a8473;text-shadow:none}
 
+/* Audio In */
+.ain{display:flex;flex-direction:column;gap:12px}
+.ain-row{display:flex;align-items:center;gap:10px}
+.ain-dev{flex:1;min-width:0}
+.ain-on.on{background:#1d2a20;border-color:#2f5a3c;color:#9fdcb4}
+.ain-mon.on{background:#5fb8a0;border-color:#5fb8a0;color:#0b1a14}
+.ain-cap{font:700 9px/1 sans-serif;letter-spacing:.22em;color:var(--mut);white-space:nowrap}
+.ain-seg{display:flex;gap:2px;background:#0e0e0d;border:1px solid #2e2d2a;border-radius:7px;padding:2px}
+.ain-seg span{white-space:nowrap;padding:6px 9px;border-radius:5px;font:700 10px/1 sans-serif;letter-spacing:.08em;color:var(--mut);cursor:pointer}
+.ain-seg span.on{background:var(--ink);color:#111}
+.ain-gain{width:100px;accent-color:#5fb8a0}
+.ain-gv{font:600 11px/1 ui-monospace,Menlo,monospace;min-width:48px;text-align:right}
+.ain-vu{display:flex;flex-direction:column;gap:5px;position:relative;padding-right:52px}
+.ain-m{height:9px;border-radius:5px;background:#1d1c1a;position:relative;overflow:hidden}
+.ain-m i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:5px;background:linear-gradient(90deg,#3f9a7f 0 70%,#d9b44a 85%,#e2402f)}
+.ain-m em{position:absolute;right:4px;top:-1px;font:700 8px/11px sans-serif;font-style:normal;color:#0008}
+.ain-clip{position:absolute;right:0;top:2px;font:800 9px/1 sans-serif;letter-spacing:.14em;padding:4px 6px;border-radius:4px;border:1px solid #3a3834;color:#5a5750}
+.ain-clip.on{background:#e2402f;border-color:#e2402f;color:#fff}
+.ain-lat{font:600 11px/1 ui-monospace,Menlo,monospace;background:#0e0e0d;border:1px solid #2e2d2a;border-radius:5px;padding:6px 8px;cursor:ns-resize;touch-action:none;white-space:nowrap}
+.ain-st{font:500 11px/1.3 ui-monospace,Menlo,monospace;color:#9fdcb4;min-height:14px}
+.ain-st.err{color:#ff8a72}
+.ain-h{color:var(--mut);font-size:11px;line-height:1.4}
+
 .mlat{white-space:nowrap;font-variant-numeric:tabular-nums}.mlat.bad{background:#7a3a1c;border-color:#c0602c;color:#fff}
 .lg .ver{margin-left:8px;font:600 9px/1 ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#8a8478;vertical-align:middle}
 </style>
 </head>
 <body>
 <div id="fp">
-  <span class="lg">S33 — <b>MOTHER</b> BOARD<small class="ver" title="Versione della Mother Board">v0.18</small></span>
+  <span class="lg">S33 — <b>MOTHER</b> BOARD<small class="ver" title="Versione della Mother Board">v0.19</small></span>
   <button id="go" title="Start the audio engine">Start audio</button><span id="st"></span>
   <span id="load" title="Audio dropouts" hidden><i></i><b>Load</b></span>
   <span class="sep"></span>
@@ -545,9 +568,10 @@ const DEFS = {
   mixer:{ name:"Mixer", c:"#9a948a", ports:[{p:"send",dir:"out",t:"audio",l:"SEND"}], ui:mixerUI },
   split:{ name:"MIDI Split", c:"#7fb0ff", ports:[{p:"in",dir:"in",t:"midi",l:"MIDI"}].concat([1,2,3,4,5,6,7,8].map(i=>({p:"o" + i, dir:"out", t:"midi", l:String(i)}))), ui:splitUI },
   chord:{ name:"Chords", c:"#c58cf0", ports:[{p:"in",dir:"in",t:"midi",l:"MIDI"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"midi",l:"CHORD"},{p:"bass",dir:"out",t:"midi",l:"BASS"}], ui:chordUI },
-  lp:   { name:"Looper", c:"#f08a24", ports:[{p:"in1",dir:"in",t:"audio",l:"IN 1"},{p:"in2",dir:"in",t:"audio",l:"IN 2"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"audio",l:"OUT"}], ui:lpUIBuild }
+  lp:   { name:"Looper", c:"#f08a24", ports:[{p:"in1",dir:"in",t:"audio",l:"IN 1"},{p:"in2",dir:"in",t:"audio",l:"IN 2"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"audio",l:"OUT"}], ui:lpUIBuild },
+  ain:  { name:"Audio In", c:"#5fb8a0", ports:[{p:"out",dir:"out",t:"audio",l:"OUT"}], ui:ainUIBuild }
 };
-const ORDER = ["midi","midi2","split","chord","lp","clock","mixer","tc","sb","dm","no","vg","ac","hx","jsb","gr","fm","outm","mout"];
+const ORDER = ["midi","midi2","split","chord","lp","ain","clock","mixer","tc","sb","dm","no","vg","ac","hx","jsb","gr","fm","outm","mout"];
 const DEFAULT_CABLES = [
   {a:{m:"midi",p:"midiOut"}, b:{m:"tc",p:"midiIn"}},
   {a:{m:"clock",p:"clkOut"}, b:{m:"tc",p:"clkIn"}},
@@ -1395,7 +1419,7 @@ function clockUI(bd){
 /* ===== Mixer =====
    Un canale per strumento: il fader regola l'uscita dello strumento, ovunque sia collegata.
    Solo: restano udibili gli strumenti in solo e quelli sulla loro catena (prima e dopo, via cavi audio). */
-const MIXCH = [["tc","Twin Core","TWIN"],["no","Nostos One","NOST"],["vg","Vega","VEGA"],["ac","Acid","ACID"],["hx","Hexa","HEXA"],["lp","Looper","LOOP"],["jsb","JSB","JSB"],["dm","Drums","DRUM"],["gr","Granular","GRAN"],["fm","FM-1","FM-1"],["sb","Stompbox","STOMP"]];
+const MIXCH = [["tc","Twin Core","TWIN"],["no","Nostos One","NOST"],["vg","Vega","VEGA"],["ac","Acid","ACID"],["hx","Hexa","HEXA"],["lp","Looper","LOOP"],["ain","Audio In","IN"],["jsb","JSB","JSB"],["dm","Drums","DRUM"],["gr","Granular","GRAN"],["fm","FM-1","FM-1"],["sb","Stompbox","STOMP"]];
 const MXDEF = {v:80, m:false, s:false, pan:0, send:0};
 if(!S.mix) S.mix = {};
 MIXCH.forEach(([id])=>{ S.mix[id] = Object.assign({}, MXDEF, S.mix[id] || {}); });
@@ -1833,9 +1857,9 @@ class S33Looper extends AudioWorkletProcessor {
     t.q.push(m); t.q.sort((a, b)=>a.at - b.at);
   }
   apply(i, t, m, f){
-    if(m.c === "rec"){ if(t.L) this.pushUndo(t); t.mode = "rec"; t.w = 0; t.org = f; t.open = !m.len; t.cap = t.recL.length; t.src = m.src; t.fresh = true; this.post(i); return; }
+    if(m.c === "rec"){ if(t.L) this.pushUndo(t); t.mode = "rec"; t.w = 0; t.org = m.org != null ? m.org : f; t.open = !m.len; t.cap = t.recL.length; t.src = m.src; t.fresh = true; this.post(i); return; }
     if(m.c === "close"){ if(t.mode === "rec") this.finish(i, t, m.then || "play"); return; }
-    if(m.c === "dub"){ if(!t.L) return; if(t.mode !== "play" && t.mode !== "dub") t.org = f; t.mode = "dub"; t.src = m.src; this.post(i); return; }
+    if(m.c === "dub"){ if(!t.L) return; if(t.mode !== "play" && t.mode !== "dub") t.org = m.org != null ? m.org : f; t.mode = "dub"; t.src = m.src; t.lag = m.lag || 0; this.post(i); return; }
     if(m.c === "play"){ if(t.mode === "rec"){ this.finish(i, t, "play"); return; } if(!t.L) return; if(t.mode === "stop") t.org = m.org != null ? m.org : f; const was = t.mode; t.mode = "play"; if(was === "dub") this.sendBuf(i); this.post(i); return; }
     if(m.c === "stop"){ if(t.mode === "rec"){ this.finish(i, t, "stop"); return; } const was = t.mode; if(t.L){ t.mode = "stop"; if(was === "dub") this.sendBuf(i); } this.post(i); return; }
   }
@@ -1859,7 +1883,7 @@ class S33Looper extends AudioWorkletProcessor {
         if(t.mode === "rec"){ t.recL[t.w] = iL; t.recR[t.w] = iR; t.w++; if(t.w >= t.cap) this.finish(i, t, "play"); }
         else if((t.mode === "play" || t.mode === "dub") && t.len){
           const p = ((f - t.org) % t.len + t.len) % t.len; yL = t.L[p]; yR = t.R[p];
-          if(t.mode === "dub"){ t.L[p] = yL * fb + iL; t.R[p] = yR * fb + iR; }
+          if(t.mode === "dub"){ const w = t.lag ? ((p - t.lag) % t.len + t.len) % t.len : p; t.L[w] = t.L[w] * fb + iL; t.R[w] = t.R[w] * fb + iR; }
         }
         const tg = (t.mode === "play" || t.mode === "dub") ? 1 : 0; t.g += (tg - t.g) * .004;
         oL[s] = yL * t.g; oR[s] = yR * t.g;
@@ -1947,6 +1971,12 @@ function lpGrid(){
 const lpWaitingClock = ()=>lpClocked() && !CLK.running;
 const lpF = t=>Math.round(t * LP.sr);
 const lpLocked = ()=>LPT.some(t=>t.len > 0 || t.mode === "rec");
+/* quanto arriva in ritardo quello che entra (Audio In: ingresso + uscita della scheda audio); gli strumenti interni sono a tempo */
+function lpLag(src){
+  if(typeof ainLatency !== "function") return 0;
+  const from = p=>{ const c = S.cables.find(c=>c.b.m === "lp" && c.b.p === p); return c && c.a.m === "ain"; };
+  return (src !== 1 && from("in1")) || (src !== 0 && from("in2")) ? lpF(ainLatency()) : 0;
+}
 /* --- comandi delle tracce --- */
 function lpSend(m){ if(LP.node) LP.node.port.postMessage(m); }
 async function lpAct(i, a){
@@ -1954,24 +1984,26 @@ async function lpAct(i, a){
   S.lp.sel = i;
   if(a === "rec"){
     if(t.pend === "rec"){ t.pend = null; lpSend({ c:"cancel", i }); lpDraw(); return; }
-    if(t.mode === "rec"){ lpSend({ c:"close", i, at:lpF(ctx.currentTime + .01) }); return; }
+    const lag = lpLag(tr.src);
+    if(t.mode === "rec"){ lpSend({ c:"close", i, at:lpF(ctx.currentTime + .01) + lag }); return; }
     const m = lpMaster(), len = S.lp.free ? (m && m !== t ? m.len : 0) : lpF(S.lp.bars * lpBarSec());
     t.pend = "rec"; lpDraw();
-    if(lpWaitingClock()){ t.wait = { c:"rec", len, src:tr.src }; return; }
-    lpSend({ c:"rec", i, at:lpF(lpGrid()), len, src:tr.src }); return;
+    if(lpWaitingClock()){ t.wait = { c:"rec", len, src:tr.src, lag }; return; }
+    const g = lpF(lpGrid()); lpSend({ c:"rec", i, at:g + lag, org:g, len, src:tr.src }); return;
   }
   if(a === "play"){
-    if(t.mode === "rec"){ lpSend({ c:"close", i, at:lpF(ctx.currentTime + .01) }); return; }
-    if(t.mode === "dub"){ lpSend({ c:"play", i, at:lpF(ctx.currentTime + .01) }); return; }
+    if(t.mode === "rec"){ lpSend({ c:"close", i, at:lpF(ctx.currentTime + .01) + lpLag(tr.src) }); return; }
+    if(t.mode === "dub"){ lpSend({ c:"play", i, at:lpF(ctx.currentTime + .01) + lpLag(tr.src) }); return; }
     if(t.mode === "play"){ lpSend({ c:"stop", i, at:lpF(ctx.currentTime + .01) }); return; }
     if(t.mode === "stop"){ if(t.pend === "play"){ t.pend = null; lpSend({ c:"cancel", i }); lpDraw(); return; }
       t.pend = "play"; lpDraw(); if(lpWaitingClock()){ t.wait = { c:"play" }; return; } lpSend({ c:"play", i, at:lpF(lpGrid()) }); }
     return;
   }
   if(a === "dub"){
-    if(t.mode === "dub"){ lpSend({ c:"play", i, at:lpF(ctx.currentTime + .01) }); return; }
-    if(t.mode === "play"){ lpSend({ c:"dub", i, at:lpF(ctx.currentTime + .01), src:tr.src }); return; }
-    if(t.mode === "stop"){ t.pend = "dub"; lpDraw(); if(lpWaitingClock()){ t.wait = { c:"dub", src:tr.src }; return; } lpSend({ c:"dub", i, at:lpF(lpGrid()), src:tr.src }); }
+    const lag = lpLag(tr.src);
+    if(t.mode === "dub"){ lpSend({ c:"play", i, at:lpF(ctx.currentTime + .01) + lag }); return; }
+    if(t.mode === "play"){ lpSend({ c:"dub", i, at:lpF(ctx.currentTime + .01) + lag, src:tr.src, lag }); return; }
+    if(t.mode === "stop"){ t.pend = "dub"; lpDraw(); if(lpWaitingClock()){ t.wait = { c:"dub", src:tr.src, lag }; return; } const g = lpF(lpGrid()); lpSend({ c:"dub", i, at:g + lag, org:g, src:tr.src, lag }); }
     return;
   }
   if(a === "undo"){ t.pend = null; t.wait = null; lpSend({ c:"undo", i }); return; }
@@ -1981,7 +2013,7 @@ async function lpAct(i, a){
 S33mods.lp.onTransport = run=>{
   if(!LP.node) return;
   if(run){ const at = lpF(CLK.origin);
-    LPT.forEach((t, i)=>{ if(t.wait){ const w = t.wait; t.wait = null; if(w.c === "rec") lpSend({ c:"rec", i, at, len:w.len, src:w.src }); else if(w.c === "dub") lpSend({ c:"dub", i, at, src:w.src }); else lpSend({ c:"play", i, at, org:at }); }
+    LPT.forEach((t, i)=>{ if(t.wait){ const w = t.wait, lg = w.lag || 0; t.wait = null; if(w.c === "rec") lpSend({ c:"rec", i, at:at + lg, org:at, len:w.len, src:w.src }); else if(w.c === "dub") lpSend({ c:"dub", i, at:at + lg, org:at, src:w.src, lag:lg }); else lpSend({ c:"play", i, at, org:at }); }
       else if(t.wasPlaying){ t.wasPlaying = false; lpSend({ c:"play", i, at, org:at }); } }); }
   else { const at = lpF(ctx.currentTime + .005);
     LPT.forEach((t, i)=>{ if(t.mode === "play" || t.mode === "dub"){ t.wasPlaying = true; lpSend({ c:"stop", i, at }); } else if(t.mode === "rec") lpSend({ c:"stop", i, at }); }); }
@@ -2144,6 +2176,119 @@ function lpOpen(){ lpEngine().then(()=>{ lpWire(); lpDraw(); }); }
 (function lpLoop(){ requestAnimationFrame(lpLoop); try{ lpFrame(); }catch(e){} })();
 setInterval(()=>{ if(S.mods && S.mods.lp && ctx && !LP.ready) lpEngine(); if(LP.node) lpWire(); if(lpUI.bd && P.lp && P.lp.el.classList.contains("open")) lpDraw(); }, 1000);
 
+/* ===== Audio In: la scheda audio (o il microfono) dentro la board =====
+   Una presa OUT come quella degli strumenti: chitarra, voce o synth hardware verso Stompbox, Looper, Granular, Mixer.
+   Il dispositivo si apre senza elaborazioni del browser (niente cancellazione dell'eco, riduzione del rumore, guadagno automatico). */
+if(!S.ain) S.ain = {};
+S.ain = Object.assign({ on:false, dev:"", label:"", ch:"st", gain:0, lat:null }, S.ain);
+const AIN = { stream:null, src:null, split:null, merge:null, g:null, an:[], peak:[0,0], clip:0, devs:[], opening:null, err:"", trackLat:0 };
+async function ainDevices(){ try{ const d = await navigator.mediaDevices.enumerateDevices(); AIN.devs = d.filter(x=>x.kind === "audioinput"); }catch(e){ AIN.devs = []; } return AIN.devs; }
+function ainStop(){
+  if(AIN.stream){ AIN.stream.getTracks().forEach(t=>t.stop()); AIN.stream = null; }
+  [AIN.src, AIN.split, AIN.merge, AIN.g].forEach(n=>{ try{ n && n.disconnect(); }catch(e){} });
+  AIN.src = AIN.split = AIN.merge = AIN.g = null; AIN.an = [];
+}
+/* apre il dispositivo scelto e lo collega all'uscita del modulo (con il canale e il guadagno scelti) */
+function ainOpen(){
+  if(AIN.opening) return AIN.opening;
+  AIN.opening = (async ()=>{
+    try{
+      const c = await getCtx(); ainStop(); AIN.err = "";
+      const audio = { echoCancellation:false, noiseSuppression:false, autoGainControl:false, channelCount:{ ideal:2 }, latency:0 };
+      if(S.ain.dev) audio.deviceId = { exact:S.ain.dev };
+      let st;
+      try{ st = await navigator.mediaDevices.getUserMedia({ audio }); }
+      catch(e){ if(S.ain.dev && (e.name === "OverconstrainedError" || e.name === "NotFoundError")){ delete audio.deviceId; st = await navigator.mediaDevices.getUserMedia({ audio }); } else throw e; }
+      AIN.stream = st; const tr = st.getAudioTracks()[0], set = tr.getSettings ? tr.getSettings() : {};
+      S.ain.dev = set.deviceId || S.ain.dev; S.ain.label = tr.label || S.ain.label; AIN.trackLat = set.latency || 0;
+      tr.onended = ()=>{ AIN.err = "The device was disconnected"; ainStop(); ainDraw(); };
+      AIN.src = c.createMediaStreamSource(st); AIN.split = c.createChannelSplitter(2); AIN.merge = c.createChannelMerger(2); AIN.g = c.createGain();
+      AIN.src.connect(AIN.split);
+      AIN.an = [0, 1].map(()=>{ const a = c.createAnalyser(); a.fftSize = 512; return a; });
+      AIN.split.connect(AIN.an[0], 0); AIN.split.connect(AIN.an[1], set.channelCount > 1 ? 1 : 0);
+      ainRoute(); AIN.merge.connect(AIN.g); ainGain(); AIN.g.connect(S33mods.ain.out); AIN.out = S33mods.ain.out;
+      S.ain.on = true; save(); await ainDevices();
+    }catch(e){ console.warn(e); AIN.err = e.name === "NotAllowedError" ? "Permission denied: allow the microphone for this page in Chrome" : (e.message || String(e)); S.ain.on = false; ainStop(); }
+    AIN.opening = null; ainDraw();
+  })();
+  return AIN.opening;
+}
+/* L, R o stereo: un canale mono finisce su entrambi i lati */
+function ainRoute(){
+  if(!AIN.split) return; try{ AIN.split.disconnect(AIN.merge); }catch(e){}
+  const stereo = AIN.stream && (AIN.stream.getAudioTracks()[0].getSettings().channelCount || 1) > 1;
+  if(S.ain.ch === "st" && stereo){ AIN.split.connect(AIN.merge, 0, 0); AIN.split.connect(AIN.merge, 1, 1); }
+  else { const k = S.ain.ch === "r" && stereo ? 1 : 0; AIN.split.connect(AIN.merge, k, 0); AIN.split.connect(AIN.merge, k, 1); }
+}
+function ainGain(){ if(AIN.g && ctx) AIN.g.gain.setTargetAtTime(Math.pow(10, S.ain.gain / 20), ctx.currentTime, .02); }
+/* il ritardo dell'ingresso: quanto arriva tardi quello che suoni rispetto a quello che senti (ingresso + uscita) */
+function ainLatency(){ if(S.ain.lat != null) return S.ain.lat / 1000; const out = ctx ? (ctx.outputLatency || ctx.baseLatency || 0) : 0; return (AIN.trackLat || .01) + out; }
+/* MONITOR: il cavo Audio In → Output, da qui senza passare da PATCHES */
+const ainMon = ()=>S.cables.some(c=>c.a.m === "ain" && c.b.m === "outm");
+function ainSetMon(on){
+  if(on && S.mods.outm && !ainMon()) addCable({ m:"ain", p:"out" }, { m:"outm", p:"in" });
+  if(!on) for(let k = S.cables.length - 1; k >= 0; k--){ const c = S.cables[k]; if(c.a.m === "ain" && c.b.m === "outm") removeCable(k); }
+  save(); if(typeof render === "function") render(); ainDraw();
+}
+/* --- scheda --- */
+const ainUI = {};
+function ainUIBuild(bd){
+  bd.innerHTML = `<div class="mod ain">
+    <div class="ain-row"><button class="ain-on">Enable input</button><select class="ain-dev" title="Sound card or microphone"></select></div>
+    <div class="ain-row"><span class="ain-cap">CHANNEL</span><span class="ain-seg"><span data-c="l">L · 1</span><span data-c="r">R · 2</span><span data-c="st">STEREO</span></span>
+      <span class="ain-cap" style="margin-left:auto">GAIN</span><input type="range" class="ain-gain" min="-24" max="24" step="1"><b class="ain-gv"></b></div>
+    <div class="ain-vu"><div class="ain-m"><i></i><em>L</em></div><div class="ain-m"><i></i><em>R</em></div><span class="ain-clip" title="Clipping: lower the gain on the sound card or here">CLIP</span></div>
+    <div class="ain-row"><button class="ain-mon" title="Send the input straight to the Output (turn it off if you already hear it from the sound card)">Monitor</button>
+      <span class="ain-cap" style="margin-left:auto" title="How late what you play arrives: the Looper moves the recording back by this much">LATENCY</span><span class="ain-lat" title="Drag up/down to set it by hand · double-click: automatic"></span></div>
+    <div class="ain-st"></div>
+    <div class="ain-h">Cable OUT where you want it: Stompbox for effects, Looper to record on top of the drums, Granular to sample live, Mixer. Headphones avoid feedback with a microphone.</div></div>`;
+  const q = s=>bd.querySelector(s);
+  Object.assign(ainUI, { bd, on:q(".ain-on"), dev:q(".ain-dev"), gain:q(".ain-gain"), gv:q(".ain-gv"), mon:q(".ain-mon"), lat:q(".ain-lat"), st:q(".ain-st"), m:[...bd.querySelectorAll(".ain-m i")], clip:q(".ain-clip") });
+  ainUI.on.onclick = ()=>{ if(S.ain.on){ S.ain.on = false; ainStop(); save(); ainDraw(); } else ainOpen(); };
+  ainUI.dev.onchange = e=>{ S.ain.dev = e.target.value; S.ain.label = e.target.selectedOptions[0] ? e.target.selectedOptions[0].textContent : ""; save(); e.target.blur(); if(S.ain.on || AIN.stream) ainOpen(); else ainDraw(); };
+  bd.querySelectorAll(".ain-seg span").forEach(s=>s.onclick = ()=>{ S.ain.ch = s.dataset.c; ainRoute(); save(); ainDraw(); });
+  ainUI.gain.value = S.ain.gain; ainUI.gain.oninput = ()=>{ S.ain.gain = +ainUI.gain.value; ainGain(); save(); ainDraw(); };
+  ainUI.mon.onclick = ()=>ainSetMon(!ainMon());
+  const L = ainUI.lat; L.ondblclick = ()=>{ S.ain.lat = null; save(); ainDraw(); };
+  L.onpointerdown = ev=>{ ev.preventDefault(); L.setPointerCapture(ev.pointerId); const y0 = ev.clientY, v0 = Math.round(ainLatency() * 1000);
+    L.onpointermove = m=>{ S.ain.lat = Math.max(0, Math.min(200, v0 + Math.round((y0 - m.clientY) / 3))); ainDraw(); }; L.onpointerup = ()=>{ L.onpointermove = L.onpointerup = null; save(); }; };
+  ainDevices().then(ainDraw);
+  if(navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener("devicechange", ()=>ainDevices().then(ainDraw));
+  ainDraw();
+}
+function ainDraw(){
+  if(!ainUI.bd) return;
+  const on = !!AIN.stream;
+  ainUI.on.textContent = on ? "Input on" : AIN.opening ? "Opening…" : "Enable input"; ainUI.on.classList.toggle("on", on);
+  if(document.activeElement !== ainUI.dev){
+    const ds = AIN.devs, named = ds.some(d=>d.label), k = ds.map(d=>d.deviceId + d.label).join("|");
+    if(ainUI.dev._k !== k){ ainUI.dev._k = k;
+      ainUI.dev.innerHTML = (ds.length ? ds : [{ deviceId:"", label:"" }]).map((d, i)=>`<option value="${esc(d.deviceId)}">${esc(d.label || (named ? "Input " + (i + 1) : i ? "Input " + (i + 1) : "Default input (allow it to see the names)"))}</option>`).join(""); }
+    if(S.ain.dev && [...ainUI.dev.options].some(o=>o.value === S.ain.dev)) ainUI.dev.value = S.ain.dev; }
+  ainUI.bd.querySelectorAll(".ain-seg span").forEach(s=>s.classList.toggle("on", s.dataset.c === S.ain.ch));
+  ainUI.gv.textContent = (S.ain.gain > 0 ? "+" : "") + S.ain.gain + " dB";
+  ainUI.mon.classList.toggle("on", ainMon()); ainUI.mon.disabled = !S.mods.outm; ainUI.mon.title = S.mods.outm ? "Send the input straight to the Output (turn it off if you already hear it from the sound card)" : "Add the Output module first";
+  ainUI.lat.textContent = Math.round(ainLatency() * 1000) + " ms" + (S.ain.lat == null ? " · auto" : "");
+  const st = AIN.stream ? AIN.stream.getAudioTracks()[0].getSettings() : null;
+  ainUI.st.textContent = AIN.err ? AIN.err : st ? `${S.ain.label || "Input"} · ${st.channelCount > 1 ? "stereo" : "mono"}${st.sampleRate ? " · " + Math.round(st.sampleRate / 100) / 10 + " kHz" : ""}` : "Off: the board does not listen to any input";
+  ainUI.st.classList.toggle("err", !!AIN.err);
+}
+const ainBuf = new Float32Array(512);
+(function ainLoop(){ requestAnimationFrame(ainLoop);
+  for(let i = 0; i < 2; i++){ const a = AIN.an[i]; let m = 0; if(a){ a.getFloatTimeDomainData(ainBuf); for(let k = 0; k < ainBuf.length; k++){ const v = Math.abs(ainBuf[k]); if(v > m) m = v; } }
+    const g = AIN.g ? Math.pow(10, S.ain.gain / 20) : 0; m *= g; if(m >= .98) AIN.clip = performance.now();
+    AIN.peak[i] = Math.max(m, AIN.peak[i] * .9); }
+  if(!ainUI.bd || !P.ain || !P.ain.el.classList.contains("open")) return;
+  ainUI.m.forEach((e, i)=>{ const db = AIN.peak[i] > 1e-4 ? 20 * Math.log10(AIN.peak[i]) : -80; e.style.width = Math.max(0, Math.min(100, (db + 60) / 60 * 100)) + "%"; });
+  ainUI.clip.classList.toggle("on", performance.now() - AIN.clip < 1200);
+})();
+/* si riapre da solo (anche dopo un ricaricamento o una sessione); si chiude se il modulo viene tolto */
+setInterval(()=>{
+  if(!S.mods.ain){ if(AIN.stream){ ainStop(); ainDraw(); } return; }
+  if(S.ain.on && !AIN.stream && !AIN.opening && ctx && !AIN.err) ainOpen();
+  if(AIN.g && AIN.out !== S33mods.ain.out){ try{ AIN.g.disconnect(); }catch(e){} AIN.g.connect(S33mods.ain.out); AIN.out = S33mods.ain.out; }
+}, 1000);
+
 /* ===== Sessioni =====
    Board e strumenti salvano già il loro stato nel browser (stessa origine della board).
    Una sessione è l'istantanea di quelle voci in un file JSON; aprirla le riscrive e ricarica la pagina.
@@ -2200,7 +2345,7 @@ function sessApply(obj, handle){
 function fromBoardSession(o){
   const st = Object.assign({}, o.storage); let b = null; try{ b = JSON.parse(st["s33-board-v2"] || "null"); }catch(e){}
   delete st["s33-board-v2"]; const vol = st["s33-board-v2-vol"]; delete st["s33-board-v2-vol"]; if(vol != null) st[KEY + "-vol"] = vol;
-  const mods = {}, used = ORDER.filter(k=>!["split","chord","lp","ac","hx"].includes(k)).filter(k=>k !== "midi2" || (b && b.cables || []).some(c=>c.a.m === "midi2"));
+  const mods = {}, used = ORDER.filter(k=>!["split","chord","lp","ac","hx","ain"].includes(k)).filter(k=>k !== "midi2" || (b && b.cables || []).some(c=>c.a.m === "midi2"));
   used.forEach((k, i)=>{ mods[k] = [i % 5, Math.floor(i / 5)]; });
   const ns = { mods, cables:(b && b.cables) || [], mix:b && b.mix, clock:b && b.clock, midiIn:b && b.midiIn, midiOut:b && b.midiOut, rec:b && b.rec };
   st[KEY] = JSON.stringify(ns);
@@ -2270,6 +2415,7 @@ const CAT = {
   split:{n:"MIDI SPLIT", s:"One MIDI channel per output (Logic)", g:"svc"},
   chord:{n:"CHORDS", s:"Chords and arpeggios (MIDI)", g:"svc"},
   lp:{n:"LOOPER", s:"4-track cassette looper", g:"fx"},
+  ain:{n:"AUDIO IN", s:"Sound card or mic: guitar, voice, synths", g:"svc"},
   clock:{n:"CLOCK", s:"Common tempo", g:"svc"}, mixer:{n:"MIXER", s:"Fader, pan, send, mute, solo", g:"svc"},
   outm:{n:"OUTPUT", s:"Limiter, meters, WAV recording", g:"svc"}, mout:{n:"MIDI OUT", s:"To Logic or an IAC bus", g:"svc"}
 };
@@ -2280,7 +2426,7 @@ const INST = ["tc","no","vg","ac","hx","jsb","dm","gr","fm"];
 const cv = document.getElementById("cv"), P = {};
 const NATIVE = ORDER.filter(id=>!DEFS[id].html);
 const FULL = id=>!!DEFS[id].html;
-const NAT_SIZE = { lp:[1120,548], chord:[600,400], split:[440,250], clock:[320,300], midi:[380,170], midi2:[380,170], mout:[380,170], outm:[380,330] };
+const NAT_SIZE = { ain:[520,296], lp:[1120,548], chord:[600,400], split:[440,250], clock:[320,300], midi:[380,170], midi2:[380,170], mout:[380,170], outm:[380,330] };
 let openK = null;
 function mkPanel(id){
   if(P[id]) return P[id];
@@ -2368,6 +2514,7 @@ function autoCable(k){
     else if(!hasOut("chord", "out")){ const t = SYN.find(m=>S.mods[m] && !hasIn(m, "midiIn")); if(t) L("chord", "out", t, "midiIn"); } }
   if(SYN.includes(k) && S.mods.chord && !hasIn(k, "midiIn") && !hasOut("chord", "out")) L("chord", "out", k, "midiIn");
   if(k === "lp" && S.mods.outm && !hasOut("lp", "out")) L("lp", "out", "outm", "in");
+  if(k === "ain" && S.mods.lp && !S.cables.some(c=>c.b.m === "lp" && c.b.p === "in2")) L("ain", "out", "lp", "in2");
   if(k === "split" && !hasIn("split", "in")){ const src = S.mods.midi ? "midi" : S.mods.midi2 ? "midi2" : null; if(src) L(src, "midiOut", "split", "in"); }
   if(k === "midi2"){ const t = ["gr","vg"].find(m=>S.mods[m] && !hasIn(m, "midiIn")); if(t) L("midi2", "midiOut", t, "midiIn"); }
   if(k === "gr" && S.mods.midi2 && !hasIn("gr", "midiIn")) L("midi2", "midiOut", "gr", "midiIn");
@@ -2674,6 +2821,12 @@ const PORT = {
     return (now, l)=>gs.forEach(e=>{ if(Math.random() < .08){ e.setAttribute("cx", x + w * (.3 + Math.random() * .36)); e.setAttribute("cy", y + 4 + Math.random() * 22); e.setAttribute("opacity", (l > .15 ? .4 + l * .6 : 0).toFixed(2)); } }); },
   sb:(g,x,y,w,h,c)=>{ const pw = (w - 9) / 4, leds = []; ["#3a3f45","#3a3f45","#d27a26","#3a3f45"].forEach((f, i)=>{ const xx = x + i * (pw + 3); R(g, xx, y, pw, h - 2, f, {rx:3}); D(g, xx + pw / 2, y + 9, 4, "#1a1a1a", {s:"#000"}); leds.push(D(g, xx + pw / 2, y + 21, 2.2, "#3a2420")); D(g, xx + pw / 2, y + 33, 5, "#777", {s:"#222"}); });
     return (now, l)=>leds.forEach(e=>{ const a = l > .15; e.setAttribute("fill", a ? "#ff5a3a" : "#3a2420"); glow(e, a); }); },
+  ain:(g,x,y,w,h,c)=>{ D(g, x + 16, y + 20, 11, "#14110f", {s:"#9a958a", sw:2}); D(g, x + 16, y + 20, 4, "#000");
+    const bars = [0, 1].map(i=>({ bg:R(g, x + 38, y + 10 + i * 13, w - 44, 7, "#262421", {rx:3}), f:R(g, x + 38, y + 10 + i * 13, 0, 7, c, {rx:3}) }));
+    const lb = tx(g, x + 38, y + 44, 8, "OFF", {mono:1, f:"#7d786f", w:600, ls:".5"});
+    return now=>{ bars.forEach((b, i)=>{ const db = AIN.peak[i] > 1e-4 ? 20 * Math.log10(AIN.peak[i]) : -80, f = Math.max(0, Math.min(1, (db + 60) / 60));
+        b.f.setAttribute("width", ((w - 44) * f).toFixed(1)); b.f.setAttribute("fill", performance.now() - AIN.clip < 1200 ? "#e2402f" : c); });
+      const t = AIN.stream ? (S.ain.label || "INPUT").toUpperCase().slice(0, 22) : AIN.err ? "NOT ALLOWED" : "OFF"; if(lb.textContent !== t) lb.textContent = t; }; },
   lp:(g,x,y,w,h,c)=>{ const cols = ["#e2402f","#f08a24","#f2c230","#2fb3a6"], cw = w / 4, rl = [], st = [];
     for(let i = 0; i < 4; i++){ const cx = x + i * cw + cw / 2, cy = y + 17, gg = el("g", {}, g); D(gg, cx, cy, 14, "#2a2826", {s:"#6d685d", sw:1.6});
       for(let k = 0; k < 3; k++){ const a = k * 2.094; el("line", {x1:cx + Math.sin(a) * 4, y1:cy - Math.cos(a) * 4, x2:cx + Math.sin(a) * 11, y2:cy - Math.cos(a) * 11, stroke:"#9a958a", "stroke-width":3, "stroke-linecap":"round"}, gg); }
