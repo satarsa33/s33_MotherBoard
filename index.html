@@ -471,8 +471,8 @@ button:hover{border-color:#5a5750}
 .lp-mix .sm{font:800 9px/1 sans-serif;border:1px solid #3a3834;border-radius:5px;padding:6px 7px;color:var(--mut);cursor:pointer;white-space:nowrap}
 .lp-mix .sm.on{background:#e2402f;border-color:#e2402f;color:#fff}.lp-mix .src{color:var(--ink)}
 .lp-bot{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid #2e2d2a;flex:none}
-.lp-bot select{font:600 11px/1 -apple-system,sans-serif;color:var(--ink);background:#141312;border:1px solid #3a3834;border-radius:6px;padding:6px 6px;max-width:130px}
-.lp-bot input[type=range]{width:110px;accent-color:#efe8d6}
+.lp-bot select{font:600 11px/1 -apple-system,sans-serif;color:var(--ink);background:#141312;border:1px solid #3a3834;border-radius:6px;padding:6px 4px;max-width:112px;min-width:0}
+.lp-bot input[type=range]{width:80px;accent-color:#efe8d6}
 .lp-msg{color:#ffb27c;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
 .lp-btn{font:800 10px/1 sans-serif;letter-spacing:.12em;color:#151412;background:linear-gradient(#f1ece4,#cbc4b3);border:1px solid #000;border-radius:7px;padding:9px 11px;box-shadow:0 3px 0 #6d685d,inset 0 1px 0 #fff;white-space:nowrap}
 .lp-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #6d685d}
@@ -508,7 +508,7 @@ button:hover{border-color:#5a5750}
 </head>
 <body>
 <div id="fp">
-  <span class="lg">S33 — <b>MOTHER</b> BOARD<small class="ver" title="Versione della Mother Board">v0.19</small></span>
+  <span class="lg">S33 — <b>MOTHER</b> BOARD<small class="ver" title="Versione della Mother Board">v0.21</small></span>
   <button id="go" title="Start the audio engine">Start audio</button><span id="st"></span>
   <span id="load" title="Audio dropouts" hidden><i></i><b>Load</b></span>
   <span class="sep"></span>
@@ -568,7 +568,7 @@ const DEFS = {
   mixer:{ name:"Mixer", c:"#9a948a", ports:[{p:"send",dir:"out",t:"audio",l:"SEND"}], ui:mixerUI },
   split:{ name:"MIDI Split", c:"#7fb0ff", ports:[{p:"in",dir:"in",t:"midi",l:"MIDI"}].concat([1,2,3,4,5,6,7,8].map(i=>({p:"o" + i, dir:"out", t:"midi", l:String(i)}))), ui:splitUI },
   chord:{ name:"Chords", c:"#c58cf0", ports:[{p:"in",dir:"in",t:"midi",l:"MIDI"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"midi",l:"CHORD"},{p:"bass",dir:"out",t:"midi",l:"BASS"}], ui:chordUI },
-  lp:   { name:"Looper", c:"#f08a24", ports:[{p:"in1",dir:"in",t:"audio",l:"IN 1"},{p:"in2",dir:"in",t:"audio",l:"IN 2"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"audio",l:"OUT"}], ui:lpUIBuild },
+  lp:   { name:"Looper", c:"#f08a24", ports:[{p:"in1",dir:"in",t:"audio",l:"IN 1"},{p:"in2",dir:"in",t:"audio",l:"IN 2"},{p:"in3",dir:"in",t:"audio",l:"IN 3"},{p:"in4",dir:"in",t:"audio",l:"IN 4"},{p:"clkIn",dir:"in",t:"clock",l:"CLK"},{p:"out",dir:"out",t:"audio",l:"OUT"}], ui:lpUIBuild },
   ain:  { name:"Audio In", c:"#5fb8a0", ports:[{p:"out",dir:"out",t:"audio",l:"OUT"}], ui:ainUIBuild }
 };
 const ORDER = ["midi","midi2","split","chord","lp","ain","clock","mixer","tc","sb","dm","no","vg","ac","hx","jsb","gr","fm","outm","mout"];
@@ -646,7 +646,7 @@ document.getElementById("go").onclick = ()=>{ getCtx().catch(err=>{ startP = nul
 
 function audioLink(c, on){
   if(!ctx) return;
-  const a = S33mods[c.a.m].post || S33mods[c.a.m].out, b = c.b.m === "lp" && c.b.p === "in2" ? (S33mods.lp.in2 || (S33mods.lp.in2 = ctx.createGain())) : S33mods[c.b.m].in;
+  const a = S33mods[c.a.m].post || S33mods[c.a.m].out, b = c.b.m === "lp" && /^in[234]$/.test(c.b.p) ? (S33mods.lp[c.b.p] || (S33mods.lp[c.b.p] = ctx.createGain())) : S33mods[c.b.m].in;
   try{ on ? a.connect(b) : a.disconnect(b); }catch(e){}
 }
 
@@ -1871,14 +1871,14 @@ class S33Looper extends AudioWorkletProcessor {
   }
   process(inp, out){
     const n = out[0][0].length, f0 = currentFrame, fb = this.fb;
-    const a = inp[0] || [], b = inp[1] || [], aL = a[0], aR = a[1] || a[0], bL = b[0], bR = b[1] || b[0];
+    const I = [0, 1, 2, 3].map(k=>{ const x = inp[k] || []; return [x[0], x[1] || x[0]]; });   // IN 1…IN 4
     for(let i = 0; i < 4; i++){
       const t = this.T[i], o = out[i], oL = o[0], oR = o[1] || o[0];
       for(let s = 0; s < n; s++){
         const f = f0 + s;
         while(t.q.length && t.q[0].at <= f) this.apply(i, t, t.q.shift(), f);
         let iL = 0, iR = 0;
-        if(t.mode === "rec" || t.mode === "dub"){ if(t.src !== 1 && aL){ iL += aL[s]; iR += aR[s]; } if(t.src !== 0 && bL){ iL += bL[s]; iR += bR[s]; } }
+        if(t.mode === "rec" || t.mode === "dub"){ for(let k = 0; k < 4; k++) if((t.src === 4 || t.src === k) && I[k][0]){ iL += I[k][0][s]; iR += I[k][1][s]; } }
         let yL = 0, yR = 0;
         if(t.mode === "rec"){ t.recL[t.w] = iL; t.recR[t.w] = iR; t.w++; if(t.w >= t.cap) this.finish(i, t, "play"); }
         else if((t.mode === "play" || t.mode === "dub") && t.len){
@@ -1896,7 +1896,9 @@ try{ registerProcessor("s33-looper", S33Looper); }catch(e){}
 `;
 if(!S.lp) S.lp = {};
 S.lp = Object.assign({ bars:4, free:false, fb:90, foot:true, tapes:true, sel:0, in1:"", in2:"" }, S.lp);
-if(!Array.isArray(S.lp.tr) || S.lp.tr.length !== 4) S.lp.tr = [0,1,2,3].map(i=>({ label:"", vol:80, mute:false, src:i % 2 }));
+if(!Array.isArray(S.lp.tr) || S.lp.tr.length !== 4){ S.lp.tr = [0,1,2,3].map(i=>({ label:"", vol:80, mute:false, src:i })); S.lp.inputs = 4; }
+/* dalla 0.21 quattro ingressi, uno per traccia (src 0–3 = IN 1–4, 4 = tutti); prima "1+2" era il 2 */
+if(S.lp.inputs !== 4){ S.lp.tr.forEach(t=>{ if(t.src === 2) t.src = 4; }); S.lp.inputs = 4; }
 const LP_STRIPES = [["#e2402f","#f08a24","#f2c230"],["#2fb3a6","#5aa0ff","#a57ddc"],["#f2c230","#5fcf86","#2fb3a6"],["#ff6b9a","#f08a24","#ffd166"]];
 const LPT = [0,1,2,3].map(()=>({ mode:"empty", len:0, org:0, layers:0, L:null, R:null, peaks:null, pend:null, w:0, wasPlaying:false }));
 const LP = { node:null, ready:null, gains:[], an:[], inA:null, inB:null, out:null, sr:48000 };
@@ -1906,7 +1908,7 @@ function lpEngine(){
   LP.ready = (async ()=>{
     const c = await getCtx(); LP.sr = c.sampleRate;
     await c.audioWorklet.addModule("data:text/javascript;charset=utf-8," + encodeURIComponent(LP_WORKLET));
-    LP.node = new AudioWorkletNode(c, "s33-looper", { numberOfInputs:2, numberOfOutputs:4, outputChannelCount:[2,2,2,2], channelCount:2, channelCountMode:"explicit" });
+    LP.node = new AudioWorkletNode(c, "s33-looper", { numberOfInputs:4, numberOfOutputs:4, outputChannelCount:[2,2,2,2], channelCount:2, channelCountMode:"explicit" });
     LP.node.port.onmessage = e=>lpMsg(e.data);
     for(let i = 0; i < 4; i++){ const g = c.createGain(), a = c.createAnalyser(); a.fftSize = 512; LP.node.connect(g, i); g.connect(a); LP.gains.push(g); LP.an.push(a); }
     lpWire(); lpGains(); LP.node.port.postMessage({ c:"fb", v:S.lp.fb / 100 });
@@ -1921,8 +1923,8 @@ function lpEngine(){
 function lpWire(){
   if(!LP.node) return; const m = S33mods.lp;
   if(!m.in2 && ctx) m.in2 = ctx.createGain();
-  if(LP.inA !== m.in){ try{ LP.inA && LP.inA.disconnect(LP.node); }catch(e){} m.in.connect(LP.node, 0, 0); LP.inA = m.in; }
-  if(LP.inB !== m.in2){ try{ LP.inB && LP.inB.disconnect(LP.node); }catch(e){} m.in2.connect(LP.node, 0, 1); LP.inB = m.in2; }
+  if(!LP.ins) LP.ins = [];
+  ["in", "in2", "in3", "in4"].forEach((k, j)=>{ if(!m[k] && ctx) m[k] = ctx.createGain(); if(m[k] && LP.ins[j] !== m[k]){ try{ LP.ins[j] && LP.ins[j].disconnect(LP.node); }catch(e){} m[k].connect(LP.node, 0, j); LP.ins[j] = m[k]; } });
   if(LP.out !== m.out){ LP.gains.forEach(g=>{ try{ g.disconnect(); }catch(e){} g.connect(m.out); g.connect(LP.an[LP.gains.indexOf(g)]); }); LP.out = m.out; }
 }
 function lpGains(){ if(!ctx) return; LP.gains.forEach((g, i)=>{ const t = S.lp.tr[i]; g.gain.setTargetAtTime(t.mute ? 0 : Math.pow(t.vol / 100, 1.6) * 1.2, ctx.currentTime, .015); }); }
@@ -1975,7 +1977,7 @@ const lpLocked = ()=>LPT.some(t=>t.len > 0 || t.mode === "rec");
 function lpLag(src){
   if(typeof ainLatency !== "function") return 0;
   const from = p=>{ const c = S.cables.find(c=>c.b.m === "lp" && c.b.p === p); return c && c.a.m === "ain"; };
-  return (src !== 1 && from("in1")) || (src !== 0 && from("in2")) ? lpF(ainLatency()) : 0;
+  return [0, 1, 2, 3].some(k=>(src === 4 || src === k) && from("in" + (k + 1))) ? lpF(ainLatency()) : 0;
 }
 /* --- comandi delle tracce --- */
 function lpSend(m){ if(LP.node) LP.node.port.postMessage(m); }
@@ -2066,10 +2068,10 @@ function lpUIBuild(bd){
   </div>
   <div class="lp-tracks" id="lpTr"></div>
   <div class="lp-bot">
-    <span class="lp-cap">IN 1</span><select id="lpIn1" title="What IN 1 records"></select><span class="lp-cap">IN 2</span><select id="lpIn2" title="What IN 2 records"></select>
-    <span class="lp-cap" style="margin-left:8px">FEEDBACK ON DUB</span><input type="range" id="lpFb" min="50" max="100" step="1" title="How much of the old tape stays when you overdub"><span class="lp-cap" id="lpFbV"></span>
+    ${[1,2,3,4].map(k=>`<span class="lp-cap">IN ${k}</span><select class="lp-in" data-p="in${k}" title="What IN ${k} records (track ${k} records from IN ${k})"></select>`).join("")}
+    <span class="lp-cap" style="margin-left:8px" title="Feedback on dub: how much of the old tape stays when you overdub">DUB FB</span><input type="range" id="lpFb" min="50" max="100" step="1" title="How much of the old tape stays when you overdub"><span class="lp-cap" id="lpFbV"></span>
     <span class="lp-msg" id="lpMsg"></span><span style="flex:1"></span>
-    <button class="lp-btn" id="lpUndoAll" title="Undo the last layer on every track">⟲ UNDO ALL</button><button class="lp-btn" id="lpEjAll" title="Empty every track (click twice)">⏏ EJECT ALL</button><button class="lp-btn lp-hot" id="lpMix" title="All the tracks in one WAV">⤓ MIXDOWN WAV</button>
+    <button class="lp-btn" id="lpUndoAll" title="Undo the last layer on every track">⟲ UNDO ALL</button><button class="lp-btn" id="lpEjAll" title="Empty every track (click twice)">⏏ EJECT ALL</button><button class="lp-btn lp-hot" id="lpMix" title="All the tracks in one WAV">⤓ MIXDOWN</button>
   </div></div>`;
   const q = s=>bd.querySelector(s);
   Object.assign(lpUI, { bd, digits:[...bd.querySelectorAll(".lp-ctr .d span:not(.dot)")], sync:q("#lpSync"), foot:q("#lpFoot"), msg:q("#lpMsg"), tr:[] });
@@ -2078,7 +2080,7 @@ function lpUIBuild(bd){
   lpUI.foot.onclick = ()=>{ S.lp.foot = !S.lp.foot; save(); lpDraw(); };
   const fb = q("#lpFb"); fb.value = S.lp.fb; q("#lpFbV").textContent = S.lp.fb + "%";
   fb.oninput = ()=>{ S.lp.fb = +fb.value; q("#lpFbV").textContent = S.lp.fb + "%"; lpSend({ c:"fb", v:S.lp.fb / 100 }); save(); };
-  q("#lpIn1").onchange = e=>{ lpPatch("in1", e.target.value); e.target.blur(); }; q("#lpIn2").onchange = e=>{ lpPatch("in2", e.target.value); e.target.blur(); };
+  bd.querySelectorAll(".lp-in").forEach(e=>e.onchange = ()=>{ lpPatch(e.dataset.p, e.value); e.blur(); });
   q("#lpUndoAll").onclick = ()=>[0,1,2,3].forEach(i=>LPT[i].len && lpAct(i, "undo"));
   const ej = q("#lpEjAll"); ej.onclick = ()=>{ if(!ej.classList.contains("warn")){ ej.classList.add("warn"); ej.textContent = "SURE?"; clearTimeout(ej._t); ej._t = setTimeout(()=>{ ej.classList.remove("warn"); ej.textContent = "⏏ EJECT ALL"; }, 2500); return; }
     ej.classList.remove("warn"); ej.textContent = "⏏ EJECT ALL"; [0,1,2,3].forEach(i=>lpAct(i, "eject")); };
@@ -2093,7 +2095,7 @@ function lpUIBuild(bd){
         <canvas class="lp-wave"></canvas><div class="holes"><i></i><i></i></div></div>
       <canvas class="lp-vu"></canvas>
       <div class="lp-keys"><span class="k rec" data-a="rec" title="Record (on the next bar)"><s>●</s>REC</span><span class="k play" data-a="play" title="Play / stop"><s>▶</s>PLAY</span><span class="k dub" data-a="dub" title="Overdub: record on top"><s>⊕</s>DUB</span><span class="k" data-a="undo" title="Remove the last layer"><s>⟲</s>UNDO</span><span class="k" data-a="eject" title="Empty this track"><s>⏏</s>EJECT</span></div>
-      <div class="lp-mix"><span class="lp-cap">VOL</span><input type="range" min="0" max="100" class="vol"><span class="sm m" title="Mute">M</span><span class="sm src" title="Which input this track records: IN 1, IN 2 or both"></span><span class="sm ex" title="Export this track as WAV">⤓</span></div>`;
+      <div class="lp-mix"><span class="lp-cap">VOL</span><input type="range" min="0" max="100" class="vol"><span class="sm m" title="Mute">M</span><span class="sm src" title="Which input this track records: IN 1–4 or ALL (click to change)"></span><span class="sm ex" title="Export this track as WAV">⤓</span></div>`;
     T.appendChild(el);
     const u = { el, em:el.querySelector(".lp-th em"), led:el.querySelector(".lp-led"), ab:el.querySelector(".ab"), hw:el.querySelector(".hw"), reels:[...el.querySelectorAll(".reel")], packs:[...el.querySelectorAll(".pack")], tp:el.querySelector(".tp"),
       wave:el.querySelector(".lp-wave"), vu:el.querySelector(".lp-vu"), keys:{}, vol:el.querySelector(".vol"), m:el.querySelector(".m"), src:el.querySelector(".src"), rot:0, nd:-1 };
@@ -2102,7 +2104,7 @@ function lpUIBuild(bd){
     u.hw.textContent = S.lp.tr[i].label; u.hw.onblur = ()=>{ S.lp.tr[i].label = u.hw.textContent.trim().slice(0, 24); save(); }; u.hw.onkeydown = e=>{ if(e.key === "Enter"){ e.preventDefault(); u.hw.blur(); } e.stopPropagation(); };
     u.vol.value = S.lp.tr[i].vol; u.vol.oninput = ()=>{ S.lp.tr[i].vol = +u.vol.value; lpGains(); save(); };
     u.m.onclick = ()=>{ S.lp.tr[i].mute = !S.lp.tr[i].mute; lpGains(); save(); lpDraw(); };
-    u.src.onclick = ()=>{ S.lp.tr[i].src = (S.lp.tr[i].src + 1) % 3; save(); lpDraw(); };
+    u.src.onclick = ()=>{ S.lp.tr[i].src = (S.lp.tr[i].src + 1) % 5; save(); lpDraw(); };
     el.querySelector(".ex").onclick = ()=>lpExport(i);
     lpUI.tr.push(u);
   }
@@ -2116,11 +2118,11 @@ function lpDraw(){
   lpUI.sync.classList.toggle("on", ck);
   lpUI.foot.querySelector("b").textContent = S.lp.foot ? "SUSTAIN PEDAL" : "OFF"; lpUI.foot.classList.toggle("on", S.lp.foot);
   // il menu si rifà solo se cambiano i moduli, e mai mentre è aperto (altrimenti si chiude sotto il mouse)
-  const fill = (sel, port)=>{ const e = lpUI.bd.querySelector(sel); if(document.activeElement === e) return;
+  const fill = (e, port)=>{ if(document.activeElement === e) return;
     const cur = lpPatched(port), opts = lpSources(), k = opts.join(",");
     if(e._k !== k){ e._k = k; e.innerHTML = `<option value="">—</option>` + opts.map(id=>`<option value="${id}">${esc(DEFS[id].name)}</option>`).join(""); }
     const v = opts.includes(cur) ? cur : ""; if(e.value !== v) e.value = v; };
-  fill("#lpIn1", "in1"); fill("#lpIn2", "in2");
+  lpUI.bd.querySelectorAll(".lp-in").forEach(e=>fill(e, e.dataset.p));
   lpUI.tr.forEach((u, i)=>{ const t = LPT[i], tr = S.lp.tr[i];
     const st = t.pend === "rec" ? (lpWaitingClock() ? "REC · WAITING FOR PLAY" : "REC · WAITING FOR THE BAR") : t.pend === "play" ? "PLAY · ON THE BAR" : t.pend === "dub" ? "DUB · ON THE BAR"
       : t.mode === "rec" ? "RECORDING" : t.mode === "dub" ? "DUB · LAYER " + (t.layers + 1) : t.mode === "play" ? "PLAY" : t.mode === "stop" ? "STOPPED" : "EMPTY";
@@ -2130,7 +2132,7 @@ function lpDraw(){
     u.ab.textContent = t.len ? (Math.abs(bars - Math.round(bars)) < .02 ? Math.round(bars) + (Math.round(bars) === 1 ? " BAR" : " BARS") : (t.len / LP.sr).toFixed(1) + " SEC") + " · " + (t.layers + 1) + (t.layers ? " LAYERS" : " LAYER") : "BLANK TAPE";
     u.el.classList.toggle("sel", S.lp.sel === i); u.el.classList.toggle("blank", !t.len && t.mode !== "rec");
     Object.entries(u.keys).forEach(([a, k])=>k.classList.toggle("dn", (a === "rec" && (t.mode === "rec" || t.pend === "rec")) || (a === "play" && t.mode === "play") || (a === "dub" && (t.mode === "dub" || t.pend === "dub"))));
-    u.m.classList.toggle("on", tr.mute); u.src.textContent = ["IN 1","IN 2","1+2"][tr.src];
+    u.m.classList.toggle("on", tr.mute); u.src.textContent = ["IN 1","IN 2","IN 3","IN 4","ALL"][tr.src] || "IN 1";
     u.nd = -1; });
 }
 function lpFrame(){
@@ -2456,6 +2458,9 @@ function placePanel(id){
   if(FULL(id)) r = {x:10, y:10, w:W - 20, h:H - 20};
   else if(id === "fm"){ const w = Math.min(820, W - 60), h = H - 40; r = {x:(W - w) / 2, y:20, w, h}; }
   else if(id === "mixer"){ const n = Math.max(1, MIXCH.filter(([m])=>S.mods[m]).length), w = Math.min(1120, W - 60, 140 + n * 150), h = Math.min(640, H - 60); r = {x:(W - w) / 2, y:(H - h) / 2, w, h}; }
+  else if(id === "lp"){ // il Looper si ingrandisce con la finestra (tutta la scheda in scala, come uno strumento a tutta pagina)
+    const [w0, h0] = NAT_SIZE.lp, z = Math.max(.6, Math.min((W - 20) / w0, (H - 20 - 32) / (h0 - 32))), w = w0 * z, h = (h0 - 32) * z + 32;
+    r = {x:(W - w) / 2, y:(H - h) / 2, w, h}; const bd = p.el.querySelector(".bd"); if(bd) bd.style.zoom = z; }
   else { const [w, h] = NAT_SIZE[id] || [360, 260]; r = {x:(W - w) / 2, y:(H - h) / 2, w, h}; }
   Object.assign(p.el.style, {left:r.x + "px", top:r.y + "px", width:r.w + "px", height:r.h + "px"});
   p.el.classList.toggle("big", r.w > 420);
@@ -2514,7 +2519,7 @@ function autoCable(k){
     else if(!hasOut("chord", "out")){ const t = SYN.find(m=>S.mods[m] && !hasIn(m, "midiIn")); if(t) L("chord", "out", t, "midiIn"); } }
   if(SYN.includes(k) && S.mods.chord && !hasIn(k, "midiIn") && !hasOut("chord", "out")) L("chord", "out", k, "midiIn");
   if(k === "lp" && S.mods.outm && !hasOut("lp", "out")) L("lp", "out", "outm", "in");
-  if(k === "ain" && S.mods.lp && !S.cables.some(c=>c.b.m === "lp" && c.b.p === "in2")) L("ain", "out", "lp", "in2");
+  if(k === "ain" && S.mods.lp){ const f = ["in2","in1","in3","in4"].find(p=>!S.cables.some(c=>c.b.m === "lp" && c.b.p === p)); if(f) L("ain", "out", "lp", f); }
   if(k === "split" && !hasIn("split", "in")){ const src = S.mods.midi ? "midi" : S.mods.midi2 ? "midi2" : null; if(src) L(src, "midiOut", "split", "in"); }
   if(k === "midi2"){ const t = ["gr","vg"].find(m=>S.mods[m] && !hasIn(m, "midiIn")); if(t) L("midi2", "midiOut", t, "midiIn"); }
   if(k === "gr" && S.mods.midi2 && !hasIn("gr", "midiIn")) L("midi2", "midiOut", "gr", "midiIn");
